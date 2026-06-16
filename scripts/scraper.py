@@ -522,6 +522,6 @@ if __name__ == "__main__":
     print(f"📌 Filtradas: {len(df)} modificatorias de tipo ACTUALIZACION SEGURIDAD")
 
     fecha = datetime.now().strftime("%Y%m%d_%H%M")
-    ruta  = f"/mnt/user-data/outputs/modificatorias_digemid_{fecha}.xlsx"
+    ruta  = f"/tmp/modificatorias_digemid_{fecha}.xlsx"
     exportar_excel(df, ruta)
     print(f"\nArchivo listo: {ruta}")
