@@ -10,12 +10,8 @@ from email import encoders
 
 EMAIL_FROM = "conkosafe.ai@gmail.com"
 EMAIL_TO   = (
-    "july.maita@conkomerco.com,"
     "finanzas@conkomerco.com,"
     "conkosafe.ai@gmail.com,"
-    "alex.rodriguez@conkomerco.com,"
-    "angelica.aguero@conkomerco.com,"
-    "giancarlos.chafloque@conkomerco.com"
 )
 
 smtp_host   = os.environ['SMTP_HOST']
@@ -63,7 +59,7 @@ html = (
     '<p style="margin:0;color:#BDD7EE;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;">'
     'CONKOSAFE IA &mdash; PV Intelligence</p>'
     '<h1 style="margin:6px 0 0;color:#fff;font-size:21px;font-weight:bold;line-height:1.3;">'
-    'Modificaciones al Registro Sanitario</h1>'
+    'Modificaciones por seguridad Registro Sanitario</h1>'
     '<p style="margin:4px 0 0;color:#BDD7EE;font-size:12px;">'
     f'Actualizaciones de Seguridad DIGEMID &mdash; {fecha} hora Lima</p>'
     '</td>'
