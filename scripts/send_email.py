@@ -16,6 +16,7 @@ EMAIL_TO   = (
     "alex.rodriguez@conkomerco.com"
     "angelica.aguero@conkomerco.com"
     "giancarlos.chafloque@conkomerco.com"
+    "Aron.cortez@conkomerco.com"
 )
 
 smtp_host   = os.environ['SMTP_HOST']
