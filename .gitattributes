@@ -1,0 +1,6 @@
+# Forzar LF en todos los archivos — evita warning CRLF en Windows
+* text=auto eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.py   text eol=lf
+*.md   text eol=lf

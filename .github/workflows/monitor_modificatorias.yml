@@ -1,0 +1,124 @@
+name: "Monitor DIGEMID - Modificatorias Actualizacion Seguridad"
+
+on:
+  schedule:
+    - cron: "0 13 * * 1,3,5"   # Lun/Mie/Vie a las 08:00 AM hora Lima (UTC-5)
+  workflow_dispatch:
+    inputs:
+      max_paginas:
+        description: "Paginas a scrapear (2 = ~20 modificatorias, filtra 10 de seguridad)"
+        required: false
+        default: "2"
+      dry_run:
+        description: "Dry run (no envia correo)"
+        type: boolean
+        default: false
+
+env:
+  PYTHON_VERSION: "3.11"
+  TZ: "America/Lima"
+  EMAIL_FROM: "conkosafe.ai@gmail.com"
+  EMAIL_TO: "july.maita@conkomerco.com,finanzas@conkomerco.com,conkosafe.ai@gmail.com"
+
+jobs:
+
+  scrape:
+    name: "1 Scraping Modificatorias DIGEMID"
+    runs-on: ubuntu-latest
+    outputs:
+      excel_name:        ${{ steps.run.outputs.excel_name }}
+      total_modif:       ${{ steps.run.outputs.total_modif }}
+      modif_preventivas: ${{ steps.run.outputs.modif_preventivas }}
+      modif_inmediatas:  ${{ steps.run.outputs.modif_inmediatas }}
+      fecha_reporte:     ${{ steps.run.outputs.fecha_reporte }}
+      motor_analisis:    ${{ steps.run.outputs.motor_analisis }}
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Instalar dependencias
+        run: |
+          pip install --upgrade pip
+          pip install requests beautifulsoup4 pandas openpyxl pymupdf
+          if [ -n "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+            pip install anthropic
+            echo "Motor: Claude API"
+          else
+            echo "Motor: Heuristico"
+          fi
+
+      - name: Ejecutar scraper
+        id: run
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MAX_PAGINAS: ${{ github.event.inputs.max_paginas || '2' }}
+        run: python3 scripts/run_scraper.py
+
+      - name: Guardar Excel como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: excel-modificatorias
+          path: /tmp/modificatorias_digemid_*.xlsx
+          retention-days: 30
+
+  send_email:
+    name: "2 Enviar correo con Excel adjunto"
+    needs: scrape
+    runs-on: ubuntu-latest
+    if: ${{ always() && github.event.inputs.dry_run != 'true' && needs.scrape.result == 'success' }}
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Descargar Excel
+        uses: actions/download-artifact@v4
+        with:
+          name: excel-modificatorias
+          path: /tmp/
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Enviar correo con adjunto
+        env:
+          SMTP_HOST:         ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:         ${{ secrets.SMTP_PORT }}
+          SMTP_USER:         ${{ secrets.SMTP_USER }}
+          SMTP_PASS:         ${{ secrets.SMTP_PASS }}
+          TOTAL:             ${{ needs.scrape.outputs.total_modif }}
+          PREVENTIVAS:       ${{ needs.scrape.outputs.modif_preventivas }}
+          INMEDIATAS:        ${{ needs.scrape.outputs.modif_inmediatas }}
+          FECHA:             ${{ needs.scrape.outputs.fecha_reporte }}
+          EXCEL_NAME:        ${{ needs.scrape.outputs.excel_name }}
+          MOTOR:             ${{ needs.scrape.outputs.motor_analisis }}
+        run: python3 scripts/send_email.py
+
+  notify_failure:
+    name: "3 Notificar fallo"
+    needs: [scrape, send_email]
+    runs-on: ubuntu-latest
+    if: ${{ failure() }}
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Enviar alerta de fallo
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          RUN_URL:   ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: python3 scripts/notify_failure.py
