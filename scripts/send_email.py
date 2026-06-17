@@ -8,16 +8,8 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-EMAIL_FROM = "conkosafe.ai@gmail.com"
-EMAIL_TO   = (
-    "finanzas@conkomerco.com,"
-    "conkosafe.ai@gmail.com,"
-    "july.maita@conkomerco.com,"
-    "alex.rodriguez@conkomerco.com,"
-    "angelica.aguero@conkomerco.com,"
-    "giancarlos.chafloque@conkomerco.com,"
-    "Aron.cortez@conkomerco.com,"
-)
+EMAIL_FROM = os.environ.get('EMAIL_FROM', 'conkosafe.ai@gmail.com')
+EMAIL_TO   = os.environ['EMAIL_TO']
 
 smtp_host   = os.environ['SMTP_HOST']
 smtp_port   = int(os.environ.get('SMTP_PORT', '587'))
@@ -172,7 +164,8 @@ ruta_excel = sorted(archivos)[-1]
 msg = MIMEMultipart('mixed')
 msg['Subject']  = asunto
 msg['From']     = f"Monitor DIGEMID CONKOMERCO <{EMAIL_FROM}>"
-msg['To']       = EMAIL_TO
+msg['To']       = EMAIL_FROM
+msg['Bcc']      = EMAIL_TO
 msg['Reply-To'] = EMAIL_FROM
 msg.attach(MIMEText(html, 'html'))
 
