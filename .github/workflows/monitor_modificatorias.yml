@@ -18,7 +18,7 @@ env:
   PYTHON_VERSION: "3.11"
   TZ: "America/Lima"
   EMAIL_FROM: "conkosafe.ai@gmail.com"
-  EMAIL_TO: "july.maita@conkomerco.com,finanzas@conkomerco.com,conkosafe.ai@gmail.com"
+  EMAIL_TO: "finanzas@conkomerco.com,conkosafe.ai@gmail.com,july.maita@conkomerco.com,alex.rodriguez@conkomerco.com,angelica.aguero@conkomerco.com,Aron.cortez@conkomerco.com,giancarlos.chafloque@conkomerco.com,vigilanciasanitaria@soltonpharma.com,farmacovigilancia@corval.com.pe"
 
 jobs:
 
