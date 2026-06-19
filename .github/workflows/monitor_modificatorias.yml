@@ -18,7 +18,7 @@ env:
   PYTHON_VERSION: "3.11"
   TZ: "America/Lima"
   EMAIL_FROM: "conkosafe.ai@gmail.com"
-  EMAIL_TO: "finanzas@conkomerco.com,conkosafe.ai@gmail.com,july.maita@conkomerco.com,alex.rodriguez@conkomerco.com,angelica.aguero@conkomerco.com,aron.cortez@conkomerco.com,giancarlos.chafloque@conkomerco.com,vigilanciasanitaria@soltonpharma.com,farmacovigilancia@corval.com.pe,direccion.tecnica@corval.com.pe,azegarra@soltonpharma.com"
+  EMAIL_TO: "finanzas@conkomerco.com,conkosafe.ai@gmail.com,july.maita@conkomerco.com,alex.rodriguez@conkomerco.com,angelica.aguero@conkomerco.com,aron.cortez@conkomerco.com,giancarlos.chafloque@conkomerco.com,vigilanciasanitaria@soltonpharma.com,farmacovigilancia@corval.com.pe,direccion.tecnica@corval.com.pe,azegarra@soltonpharma.com,fv@corporacioncobefar.com.pe,dtecnica@corporacioncobefar.com.pe"
 
 jobs:
 
