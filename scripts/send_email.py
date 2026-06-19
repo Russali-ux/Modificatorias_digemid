@@ -134,7 +134,7 @@ html = (
     '<tr><td style="background:#F4F6F9;padding:14px 32px;border-top:1px solid #E5E8ED;">'
     '<table width="100%" cellpadding="0" cellspacing="0"><tr>'
     '<td style="font-size:11px;color:#999;">'
-    'Enviado autom&aacute;ticamente por Monitor DIGEMID &mdash; CONKOMERCO S.A.C. &mdash; via GitHub Actions'
+    'Enviado autom&aacute;ticamente por CONKOSAFE IA - PV INTELLIGENCE, CONKOMERCO S.A.C.'
     '</td>'
     '<td align="right">'
     '<a href="https://www.digemid.minsa.gob.pe/webDigemid/publicaciones/alertas-modificaciones/modificaciones/" '
