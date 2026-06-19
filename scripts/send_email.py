@@ -163,7 +163,7 @@ ruta_excel = sorted(archivos)[-1]
 # Construir mensaje
 msg = MIMEMultipart('mixed')
 msg['Subject']  = asunto
-msg['From']     = f"Monitor DIGEMID CONKOMERCO <{EMAIL_FROM}>"
+msg['From']     = f"MODIFICACIONES por Seguridad en Registro Sanitario <{EMAIL_FROM}>"
 msg['To']       = EMAIL_FROM
 msg['Bcc']      = EMAIL_TO
 msg['Reply-To'] = EMAIL_FROM
