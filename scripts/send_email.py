@@ -1,6 +1,7 @@
 """
 send_email.py — Envía correo HTML con Excel de modificatorias DIGEMID adjunto.
 Remitente: conkosafe.ai@gmail.com
+Destinatarios: ocultos (BCC via envelope SMTP, sin header Bcc en el mensaje)
 """
 import os, glob, smtplib
 from email.mime.multipart import MIMEMultipart
@@ -8,11 +9,9 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-EMAIL_FROM = "conkosafe.ai@gmail.com"
-EMAIL_TO   = (
-    "finanzas@conkomerco.com,"
-    "conkosafe.ai@gmail.com,"
-)
+# ✅ Se leen desde variables de entorno definidas en el YML
+EMAIL_FROM = os.environ.get('EMAIL_FROM', 'conkosafe.ai@gmail.com')
+EMAIL_TO   = os.environ['EMAIL_TO']   # lista completa separada por comas
 
 smtp_host   = os.environ['SMTP_HOST']
 smtp_port   = int(os.environ.get('SMTP_PORT', '587'))
@@ -164,10 +163,12 @@ if not archivos:
 ruta_excel = sorted(archivos)[-1]
 
 # Construir mensaje
+# ✅ Solo EMAIL_FROM en el header "To" — ningún destinatario es visible
+# ✅ NO se agrega header "Bcc" — evita que los clientes de correo lo expongan
 msg = MIMEMultipart('mixed')
 msg['Subject']  = asunto
 msg['From']     = f"Monitor DIGEMID CONKOMERCO <{EMAIL_FROM}>"
-msg['To']       = EMAIL_TO
+msg['To']       = EMAIL_FROM        # Solo el remitente visible en "Para"
 msg['Reply-To'] = EMAIL_FROM
 msg.attach(MIMEText(html, 'html'))
 
@@ -180,7 +181,8 @@ encoders.encode_base64(adjunto)
 adjunto.add_header('Content-Disposition', f'attachment; filename="{excel_name}"')
 msg.attach(adjunto)
 
-destinatarios = [e.strip() for e in EMAIL_TO.split(',')]
+# ✅ Lista de destinatarios solo para el envelope SMTP (no aparece en el correo)
+destinatarios = [e.strip() for e in EMAIL_TO.split(',') if e.strip()]
 
 with smtplib.SMTP(smtp_host, smtp_port) as server:
     server.ehlo()
@@ -188,5 +190,5 @@ with smtplib.SMTP(smtp_host, smtp_port) as server:
     server.login(smtp_user, smtp_pass)
     server.sendmail(EMAIL_FROM, destinatarios, msg.as_string())
 
-print(f"Correo enviado: {EMAIL_FROM} -> {EMAIL_TO}")
+print(f"Correo enviado: {EMAIL_FROM} -> {len(destinatarios)} destinatarios (ocultos)")
 print(f"Asunto: {asunto}")
