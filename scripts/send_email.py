@@ -9,9 +9,14 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
+<<<<<<< HEAD
 # ✅ Se leen desde variables de entorno definidas en el YML
 EMAIL_FROM = os.environ.get('EMAIL_FROM', 'conkosafe.ai@gmail.com')
 EMAIL_TO   = os.environ['EMAIL_TO']   # lista completa separada por comas
+=======
+EMAIL_FROM = os.environ.get('EMAIL_FROM', 'conkosafe.ai@gmail.com')
+EMAIL_TO   = os.environ['EMAIL_TO']
+>>>>>>> 41dfe98dc930d9bad3017b1f3afc23fa680645cd
 
 smtp_host   = os.environ['SMTP_HOST']
 smtp_port   = int(os.environ.get('SMTP_PORT', '587'))
@@ -136,7 +141,7 @@ html = (
     '<tr><td style="background:#F4F6F9;padding:14px 32px;border-top:1px solid #E5E8ED;">'
     '<table width="100%" cellpadding="0" cellspacing="0"><tr>'
     '<td style="font-size:11px;color:#999;">'
-    'Enviado autom&aacute;ticamente por Monitor DIGEMID &mdash; CONKOMERCO S.A.C. &mdash; via GitHub Actions'
+    'Enviado autom&aacute;ticamente por CONKOSAFE IA - PV INTELLIGENCE, CONKOMERCO S.A.C.'
     '</td>'
     '<td align="right">'
     '<a href="https://www.digemid.minsa.gob.pe/webDigemid/publicaciones/alertas-modificaciones/modificaciones/" '
@@ -167,8 +172,14 @@ ruta_excel = sorted(archivos)[-1]
 # ✅ NO se agrega header "Bcc" — evita que los clientes de correo lo expongan
 msg = MIMEMultipart('mixed')
 msg['Subject']  = asunto
+<<<<<<< HEAD
 msg['From']     = f"Monitor DIGEMID CONKOMERCO <{EMAIL_FROM}>"
 msg['To']       = EMAIL_FROM        # Solo el remitente visible en "Para"
+=======
+msg['From']     = f"MODIFICACIONES por Seguridad en Registro Sanitario <{EMAIL_FROM}>"
+msg['To']       = EMAIL_FROM
+msg['Bcc']      = EMAIL_TO
+>>>>>>> 41dfe98dc930d9bad3017b1f3afc23fa680645cd
 msg['Reply-To'] = EMAIL_FROM
 msg.attach(MIMEText(html, 'html'))
 
