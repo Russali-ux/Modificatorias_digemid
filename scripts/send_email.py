@@ -23,6 +23,8 @@ preventivas = os.environ.get('PREVENTIVAS', '0')
 fecha       = os.environ.get('FECHA', '')
 excel_name  = os.environ.get('EXCEL_NAME', 'modificatorias_digemid.xlsx')
 motor       = os.environ.get('MOTOR', 'Heuristico')
+sin_pdf     = int(os.environ.get('SIN_PDF_COUNT', '0') or '0')
+total_scrapeadas = int(os.environ.get('TOTAL_SCRAPEADAS', '0') or '0')
 
 n_inm = int(inmediatas)
 n_pre = int(preventivas)
@@ -40,6 +42,25 @@ else:
     badge_texto = f"{n_tot} actualizaciones de seguridad — Sin urgencias criticas"
 
 motor_txt = "Claude API" if motor == "Claude API" else "Motor Heuristico"
+
+# Aviso de fiabilidad: si alguna publicación no se pudo leer completa
+# (PDF caído/bloqueado), que quede visible en el correo en vez de perderse
+# en silencio del reporte.
+aviso_html = ""
+if sin_pdf > 0:
+    aviso_html = (
+        '<tr><td style="padding:0 32px 14px;">'
+        '<div style="background:#FDECEC;border-left:4px solid #C00000;padding:12px 18px;'
+        'border-radius:0 8px 8px 0;">'
+        '<p style="margin:0;font-size:12px;color:#8B0000;">'
+        f'<strong>&#9888; Aviso de fiabilidad:</strong> {sin_pdf} de {total_scrapeadas} publicaci&oacute;n(es) '
+        'escaneadas no se pudieron leer completas (PDF no disponible o bloqueado por DIGEMID) y se '
+        'clasificaron solo por t&iacute;tulo. Es posible que falte alguna modificatoria de seguridad en '
+        'este reporte &mdash; revisar manualmente en '
+        '<a href="https://www.digemid.minsa.gob.pe/webDigemid/publicaciones/alertas-modificaciones/modificaciones/" '
+        'style="color:#8B0000;">digemid.minsa.gob.pe</a> si es cr&iacute;tico.'
+        '</p></div></td></tr>'
+    )
 
 html = (
     '<!DOCTYPE html><html lang="es"><head>'
@@ -66,6 +87,7 @@ html = (
     f'<div style="background:{badge_color};color:#fff;padding:13px 20px;border-radius:8px;'
     f'font-weight:bold;font-size:14px;text-align:center;letter-spacing:.3px;">'
     f'{badge_texto}</div></td></tr>'
+    f'{aviso_html}'
     '<tr><td style="padding:18px 32px;">'
     '<table width="100%" cellspacing="10" cellpadding="0"><tr>'
     '<td width="33%" style="background:#F0F5FF;border-radius:10px;padding:16px 10px;'

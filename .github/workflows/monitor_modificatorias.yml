@@ -18,13 +18,17 @@ env:
   PYTHON_VERSION: "3.11"
   TZ: "America/Lima"
   EMAIL_FROM: "conkosafe.ai@gmail.com"
-  EMAIL_TO: "finanzas@conkomerco.com"
+  EMAIL_TO: "finanzas@conkomerco.com,conkosafe.ai@gmail.com,july.maita@conkomerco.com,alex.rodriguez@conkomerco.com,angelica.aguero@conkomerco.com,aron.cortez@conkomerco.com,giancarlos.chafloque@conkomerco.com,vigilanciasanitaria@soltonpharma.com,farmacovigilancia@corval.com.pe,direccion.tecnica@corval.com.pe,azegarra@soltonpharma.com,fv@corporacioncobefar.com.pe,farmacovigilancia@greyinversiones.com,regulatorios@greyinversiones.com,fv.peru@sevenpharma.net,fv1.peru@sevenpharma.net,Regulatory.Peru@sevenpharma.net,farmacovigilancia@qmpharma.com,lissetsauni@qmpharma.com,pamelaarce@qmpharma.com,farmacovigilancia@perulab.com.pe,ricardo.barrantes@perulab.com.pe,patricia.medina@perulab.com.pe,dcardenas@bagoperu.com.pe,iramos@bagoperu.com.pe,jobregon@bagoperu.com.pe,farmacovigilancia@bago.com.pe,srosas@ferrer.com,daranda@ferrer.com,pefarmacovigilancia@ferrer.com,dtecnica@corporacioncobefar.com.pe"
 
 jobs:
 
   scrape:
     name: "1 Scraping Modificatorias DIGEMID"
-    runs-on: ubuntu-latest
+    # Corre en tu runner Windows self-hosted (RUSS) en vez de ubuntu-latest:
+    # digemid.minsa.gob.pe (WordPress) suele bloquear IPs de datacenter de
+    # GitHub-hosted runners — mismo patrón ya visto en agenteconkosafe_web.
+    # Si el label de tu runner es distinto, ajusta esta línea.
+    runs-on: [self-hosted, Windows]
     outputs:
       excel_name:        ${{ steps.run.outputs.excel_name }}
       total_modif:       ${{ steps.run.outputs.total_modif }}
@@ -32,6 +36,8 @@ jobs:
       modif_inmediatas:  ${{ steps.run.outputs.modif_inmediatas }}
       fecha_reporte:     ${{ steps.run.outputs.fecha_reporte }}
       motor_analisis:    ${{ steps.run.outputs.motor_analisis }}
+      sin_pdf_count:     ${{ steps.run.outputs.sin_pdf_count }}
+      total_scrapeadas:  ${{ steps.run.outputs.total_scrapeadas }}
     steps:
       - name: Checkout repositorio
         uses: actions/checkout@v4
@@ -42,28 +48,26 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Instalar dependencias
+        shell: bash
         run: |
           pip install --upgrade pip
-          pip install requests beautifulsoup4 pandas openpyxl pymupdf
-          if [ -n "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
-            pip install anthropic
-            echo "Motor: Claude API"
-          else
-            echo "Motor: Heuristico"
-          fi
+          pip install requests beautifulsoup4 pandas openpyxl pymupdf anthropic
 
       - name: Ejecutar scraper
         id: run
+        shell: bash
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           MAX_PAGINAS: ${{ github.event.inputs.max_paginas || '2' }}
-        run: python3 scripts/run_scraper.py
+        run: python scripts/run_scraper.py
 
       - name: Guardar Excel como artifact
         uses: actions/upload-artifact@v4
         with:
           name: excel-modificatorias
-          path: /tmp/modificatorias_digemid_*.xlsx
+          # Ruta relativa dentro del checkout (antes /tmp/..., que no existe
+          # por defecto en Windows y hacía fallar el guardado del Excel)
+          path: output/modificatorias_digemid_*.xlsx
           retention-days: 30
 
   send_email:
@@ -98,6 +102,8 @@ jobs:
           FECHA:             ${{ needs.scrape.outputs.fecha_reporte }}
           EXCEL_NAME:        ${{ needs.scrape.outputs.excel_name }}
           MOTOR:             ${{ needs.scrape.outputs.motor_analisis }}
+          SIN_PDF_COUNT:     ${{ needs.scrape.outputs.sin_pdf_count }}
+          TOTAL_SCRAPEADAS:  ${{ needs.scrape.outputs.total_scrapeadas }}
         run: python3 scripts/send_email.py
 
   notify_failure:

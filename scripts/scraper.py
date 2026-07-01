@@ -30,6 +30,27 @@ try:
 except Exception:
     pass
 
+
+def _get_con_reintentos(url: str, timeout: int = 30, reintentos: int = 3, espera: float = 5):
+    """GET con reintentos y backoff. Antes solo la descarga de PDF tenía esto;
+    el listado, las páginas y el detalle de cada post fallaban en silencio ante
+    un timeout/403/429 puntual (posible bloqueo WAF de datacenter). Devuelve el
+    Response o None si se agotan los reintentos."""
+    for intento in range(1, reintentos + 1):
+        try:
+            r = _session.get(url, headers=_HEADERS, timeout=timeout)
+            if r.status_code == 200:
+                return r
+            if r.status_code in (403, 429, 503):
+                print(f"    [{r.status_code}] {url[:70]}... reintento {intento}/{reintentos}")
+                time.sleep(espera * intento)
+                continue
+            return r  # ej. 404 — no tiene sentido reintentar
+        except Exception as e:
+            print(f"    [error] {url[:70]}... reintento {intento}/{reintentos}: {e}")
+            time.sleep(espera)
+    return None
+
 # ── Glosario de tiempos regulatorios (D.S. 016-2011-SA) ──────────────────────
 GLOSARIO_TIEMPOS = [
     ("FICHA TECNICA",          "60 días hábiles desde notificación DIGEMID",                  "Art. 58 D.S. 016-2011-SA"),
@@ -185,25 +206,32 @@ def _analizar_heuristico(titulo: str, producto: str, texto: str) -> dict:
 # ══════════════════════════════════════════════════════════════════════════════
 # PDF
 # ══════════════════════════════════════════════════════════════════════════════
-def _obtener_pdf_url(url_post: str) -> str | None:
+def _obtener_pdf_url(url_post: str) -> tuple[str | None, str]:
+    """Devuelve (pdf_url, subtitulo). El subtítulo (h3 dentro de entry-content)
+    suele contener el texto real del informe, ej. 'Informe sobre seguridad de
+    los productos farmacéuticos que contienen Caspofungina' — mucho más
+    informativo que el título genérico 'MODIFICACIONES N° 08 - 2026'."""
+    r = _get_con_reintentos(url_post, timeout=20)
+    if not r or r.status_code != 200:
+        return None, ""
     try:
-        r = _session.get(url_post, headers=_HEADERS, timeout=20)
-        r.raise_for_status()
         soup = BeautifulSoup(r.text, "html.parser")
         entry = soup.find("div", class_="entry-content") or soup.find("div", class_=re.compile(r"content"))
         if not entry:
-            return None
+            return None, ""
+        h3 = entry.find("h3")
+        subtitulo = h3.get_text(strip=True) if h3 else ""
         link = entry.find("a", href=re.compile(r"\.pdf$", re.I))
         if link:
             href = link["href"]
-            return href if href.startswith("http") else f"{BASE_URL}{href}"
+            return (href if href.startswith("http") else f"{BASE_URL}{href}"), subtitulo
         embed = entry.find("embed", src=re.compile(r"\.pdf$", re.I))
         if embed:
             src = embed.get("src", "")
-            return src if src.startswith("http") else f"{BASE_URL}{src}"
-        return None
+            return (src if src.startswith("http") else f"{BASE_URL}{src}"), subtitulo
+        return None, subtitulo
     except Exception:
-        return None
+        return None, ""
 
 
 def _descargar_pdf(url: str, reintentos: int = 3) -> bytes | None:
@@ -233,10 +261,16 @@ def _extraer_texto(pdf_bytes: bytes) -> str:
 # ══════════════════════════════════════════════════════════════════════════════
 # ENRIQUECIMIENTO
 # ══════════════════════════════════════════════════════════════════════════════
+def _texto_clasificacion(item: dict) -> str:
+    """Título oficial + subtítulo real del post (ej. 'Informe sobre seguridad...')
+    concatenados — la señal más fuerte disponible antes de tocar el PDF."""
+    return f"{item.get('n_modificacion','')} {item.get('subtitulo','')}".strip()
+
+
 def _enriquecer(item: dict, analizar_pdfs: bool = True) -> dict:
     url = item.get("url")
     if not url or not analizar_pdfs:
-        tipo = _tipo_desde_titulo(item.get("titulo", ""), item.get("producto", "") or "")
+        tipo = _tipo_desde_titulo(_texto_clasificacion(item), item.get("producto", "") or "")
         item.update({
             "tipo_modificacion": tipo,
             "urgencia":          URGENCIA_MAP.get(tipo, "INFORMATIVA"),
@@ -251,11 +285,12 @@ def _enriquecer(item: dict, analizar_pdfs: bool = True) -> dict:
         })
         return item
 
-    pdf_url = _obtener_pdf_url(url)
+    pdf_url, subtitulo = _obtener_pdf_url(url)
     item["pdf_url"] = pdf_url
+    item["subtitulo"] = subtitulo
 
     if not pdf_url:
-        tipo = _tipo_desde_titulo(item.get("titulo", ""), item.get("producto", "") or "")
+        tipo = _tipo_desde_titulo(_texto_clasificacion(item), item.get("producto", "") or "")
         item.update({
             "tipo_modificacion": tipo, "urgencia": URGENCIA_MAP.get(tipo, "INFORMATIVA"),
             "indicador_tiempos": PLAZO_MAP.get(tipo, "—"), "base_legal": BASE_MAP.get(tipo, "—"),
@@ -266,7 +301,7 @@ def _enriquecer(item: dict, analizar_pdfs: bool = True) -> dict:
 
     pdf_bytes = _descargar_pdf(pdf_url)
     if not pdf_bytes:
-        tipo = _tipo_desde_titulo(item.get("titulo", ""), item.get("producto", "") or "")
+        tipo = _tipo_desde_titulo(_texto_clasificacion(item), item.get("producto", "") or "")
         item.update({
             "tipo_modificacion": tipo, "urgencia": URGENCIA_MAP.get(tipo, "INFORMATIVA"),
             "indicador_tiempos": PLAZO_MAP.get(tipo, "—"), "base_legal": BASE_MAP.get(tipo, "—"),
@@ -278,7 +313,7 @@ def _enriquecer(item: dict, analizar_pdfs: bool = True) -> dict:
     texto = _extraer_texto(pdf_bytes)
 
     if len(texto) < 50:
-        tipo = _tipo_desde_titulo(item.get("titulo", ""), item.get("producto", "") or "")
+        tipo = _tipo_desde_titulo(_texto_clasificacion(item), item.get("producto", "") or "")
         resultado = {"tipo_modificacion": tipo, "principio_activo": "",
                      "titular_rs": "", "accion_requerida": "PDF escaneado (imagen)", "resumen": ""}
         motor = "PDF escaneado"
@@ -287,7 +322,7 @@ def _enriquecer(item: dict, analizar_pdfs: bool = True) -> dict:
         if resultado:
             motor = "Claude API"
         else:
-            resultado = _analizar_heuristico(item.get("titulo",""), item.get("producto","") or "", texto)
+            resultado = _analizar_heuristico(_texto_clasificacion(item), item.get("producto","") or "", texto)
             motor = "Heurístico"
 
     tipo = resultado.get("tipo_modificacion", "GENERAL")
@@ -353,7 +388,9 @@ def scrapear_modificaciones(max_paginas: int = 2,
                              analizar_pdfs: bool = True,
                              solo_hoy: bool = False,
                              delay_paginas: float = 1.5) -> pd.DataFrame:
-    resp = _session.get(LIST_URL, headers=_HEADERS, timeout=30)
+    resp = _get_con_reintentos(LIST_URL, timeout=30)
+    if not resp:
+        raise RuntimeError(f"No se pudo obtener el listado de modificatorias tras varios intentos: {LIST_URL}")
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
 
@@ -366,8 +403,12 @@ def scrapear_modificaciones(max_paginas: int = 2,
     print(f"  Página 1: {len(items)} modificatorias")
 
     for pag in range(2, total + 1):
+        r = _get_con_reintentos(PAGE_URL.format(page=pag), timeout=30)
+        if not r:
+            print(f"  ERROR página {pag}: sin respuesta tras varios reintentos")
+            time.sleep(delay_paginas)
+            continue
         try:
-            r = _session.get(PAGE_URL.format(page=pag), headers=_HEADERS, timeout=30)
             r.raise_for_status()
             nuevos = _parsear_posts(BeautifulSoup(r.text, "html.parser"))
             items.extend(nuevos)
@@ -396,6 +437,13 @@ def scrapear_modificaciones(max_paginas: int = 2,
     print(f"\n✅ Total modificatorias: {len(df)}")
     if "urgencia" in df.columns:
         print(df["urgencia"].value_counts().to_string())
+
+    FALLOS_PDF = {"Sin PDF", "Error descarga PDF", "PDF escaneado"}
+    if "motor_analisis" in df.columns:
+        n_sin_pdf = int(df["motor_analisis"].isin(FALLOS_PDF).sum())
+        if n_sin_pdf > 0:
+            print(f"⚠️  {n_sin_pdf}/{len(df)} modificatoria(s) sin texto de PDF disponible "
+                  f"(clasificadas solo por título/subtítulo — posible bloqueo o PDF caído)")
     return df
 
 
@@ -522,6 +570,8 @@ if __name__ == "__main__":
     print(f"📌 Filtradas: {len(df)} modificatorias de tipo ACTUALIZACION SEGURIDAD")
 
     fecha = datetime.now().strftime("%Y%m%d_%H%M")
-    ruta  = f"/tmp/modificatorias_digemid_{fecha}.xlsx"
+    out_dir = os.path.join(os.getcwd(), "output")
+    os.makedirs(out_dir, exist_ok=True)
+    ruta = os.path.join(out_dir, f"modificatorias_digemid_{fecha}.xlsx")
     exportar_excel(df, ruta)
     print(f"\nArchivo listo: {ruta}")
