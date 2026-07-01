@@ -18,7 +18,7 @@ env:
   PYTHON_VERSION: "3.11"
   TZ: "America/Lima"
   EMAIL_FROM: "conkosafe.ai@gmail.com"
-  EMAIL_TO: "finanzas@conkomerco.com,conkosafe.ai@gmail.com,july.maita@conkomerco.com,alex.rodriguez@conkomerco.com,angelica.aguero@conkomerco.com,aron.cortez@conkomerco.com,giancarlos.chafloque@conkomerco.com,vigilanciasanitaria@soltonpharma.com,farmacovigilancia@corval.com.pe,direccion.tecnica@corval.com.pe,azegarra@soltonpharma.com,fv@corporacioncobefar.com.pe,farmacovigilancia@greyinversiones.com,regulatorios@greyinversiones.com,fv.peru@sevenpharma.net,fv1.peru@sevenpharma.net,Regulatory.Peru@sevenpharma.net,farmacovigilancia@qmpharma.com,lissetsauni@qmpharma.com,pamelaarce@qmpharma.com,farmacovigilancia@perulab.com.pe,ricardo.barrantes@perulab.com.pe,patricia.medina@perulab.com.pe,dcardenas@bagoperu.com.pe,iramos@bagoperu.com.pe,jobregon@bagoperu.com.pe,farmacovigilancia@bago.com.pe,srosas@ferrer.com,daranda@ferrer.com,pefarmacovigilancia@ferrer.com,dtecnica@corporacioncobefar.com.pe"
+  EMAIL_TO: "finanzas@conkomerco.com"
 
 jobs:
 
