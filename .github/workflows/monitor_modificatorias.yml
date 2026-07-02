@@ -24,11 +24,14 @@ jobs:
 
   scrape:
     name: "1 Scraping Modificatorias DIGEMID"
-    # Corre en tu runner Windows self-hosted (RUSS) en vez de ubuntu-latest:
-    # digemid.minsa.gob.pe (WordPress) suele bloquear IPs de datacenter de
-    # GitHub-hosted runners — mismo patrón ya visto en agenteconkosafe_web.
-    # Si el label de tu runner es distinto, ajusta esta línea.
-    runs-on: [self-hosted, Windows]
+    # Vuelto a ubuntu-latest: el runner self-hosted RUSS no estuvo disponible
+    # en varios intentos (job colgado en "Waiting for a runner" por más de
+    # una hora). Se mantienen los reintentos con backoff (Opción 2) como red
+    # de seguridad contra el WAF de digemid.minsa.gob.pe en este runner.
+    # Si más adelante RUSS está confirmado online y quieres volver a probarlo,
+    # solo hay que cambiar esta línea a: runs-on: [self-hosted, Windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     outputs:
       excel_name:        ${{ steps.run.outputs.excel_name }}
       total_modif:       ${{ steps.run.outputs.total_modif }}
@@ -55,11 +58,10 @@ jobs:
 
       - name: Ejecutar scraper
         id: run
-        shell: bash
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           MAX_PAGINAS: ${{ github.event.inputs.max_paginas || '2' }}
-        run: python scripts/run_scraper.py
+        run: python3 scripts/run_scraper.py
 
       - name: Guardar Excel como artifact
         uses: actions/upload-artifact@v4
@@ -74,6 +76,7 @@ jobs:
     name: "2 Enviar correo con Excel adjunto"
     needs: scrape
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: ${{ always() && github.event.inputs.dry_run != 'true' && needs.scrape.result == 'success' }}
     steps:
       - name: Checkout repositorio
@@ -110,7 +113,16 @@ jobs:
     name: "3 Notificar fallo"
     needs: [scrape, send_email]
     runs-on: ubuntu-latest
-    if: ${{ failure() }}
+    # if: failure() no siempre detecta un job cancelado por timeout-minutes
+    # (conclusión "cancelled", no "failure") — como pasó hoy con el runner
+    # RUSS sin tomar el job. Se revisa needs.*.result explícitamente.
+    if: >
+      ${{
+        always() && (
+          needs.scrape.result == 'failure' || needs.scrape.result == 'cancelled' ||
+          needs.send_email.result == 'failure' || needs.send_email.result == 'cancelled'
+        )
+      }}
     steps:
       - name: Checkout repositorio
         uses: actions/checkout@v4
