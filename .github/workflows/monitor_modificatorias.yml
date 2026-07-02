@@ -2,7 +2,7 @@ name: "Monitor DIGEMID - Modificatorias Actualizacion Seguridad"
 
 on:
   schedule:
-    - cron: "0 13 * * 1,3,5"   # Lun/Mie/Vie a las 08:00 AM hora Lima (UTC-5)
+    - cron: "0 13 * * 1"       # Lunes a las 08:00 AM hora Lima (UTC-5)
   workflow_dispatch:
     inputs:
       max_paginas:
