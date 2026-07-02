@@ -1,22 +1,31 @@
 """
-send_email.py — Envía correo HTML con Excel de modificatorias DIGEMID adjunto.
+draft_email.py — Deja el correo HTML de modificatorias DIGEMID como BORRADOR
+en Gmail (carpeta Drafts) con el Excel adjunto. NO lo envía — hay que abrirlo
+en Gmail y darle "Enviar" manualmente.
+
 Remitente: conkosafe.ai@gmail.com
-Destinatarios: ocultos (BCC via envelope SMTP, sin header Bcc en el mensaje)
+Destinatarios: van en header Bcc real (oculto entre sí al enviar desde Gmail).
+Requiere que la cuenta tenga IMAP habilitado: Gmail → Configuración →
+Reenvío y correo POP/IMAP → Habilitar IMAP.
 """
-import os, glob, smtplib
+import os, glob, imaplib, re, time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
+from email.utils import formatdate, make_msgid
 from email import encoders
 
 # ✅ Se leen desde variables de entorno definidas en el YML
 EMAIL_FROM = os.environ.get('EMAIL_FROM', 'conkosafe.ai@gmail.com')
 EMAIL_TO   = os.environ['EMAIL_TO']   # lista completa separada por comas
 
-smtp_host   = os.environ['SMTP_HOST']
-smtp_port   = int(os.environ.get('SMTP_PORT', '587'))
-smtp_user   = os.environ['SMTP_USER']
-smtp_pass   = os.environ['SMTP_PASS']
+# Mismas credenciales que usabas para SMTP — un app password de Gmail sirve
+# tanto para SMTP como para IMAP (solo hay que tener IMAP habilitado en la
+# cuenta). Si prefieres separarlas, agrega IMAP_USER/IMAP_PASS como secrets.
+imap_host   = os.environ.get('IMAP_HOST', 'imap.gmail.com')
+imap_port   = int(os.environ.get('IMAP_PORT', '993'))
+imap_user   = os.environ.get('IMAP_USER', os.environ.get('SMTP_USER', EMAIL_FROM))
+imap_pass   = os.environ.get('IMAP_PASS', os.environ.get('SMTP_PASS', ''))
 total       = os.environ.get('TOTAL', '0')
 inmediatas  = os.environ.get('INMEDIATAS', '0')
 preventivas = os.environ.get('PREVENTIVAS', '0')
@@ -161,13 +170,20 @@ if not archivos:
 ruta_excel = sorted(archivos)[-1]
 
 # Construir mensaje
-# ✅ Solo EMAIL_FROM en el header "To" — ningún destinatario es visible
-# ✅ NO se agrega header "Bcc" — evita que los clientes de correo lo expongan
+# El "To" sigue mostrando solo el remitente. Como esto ya NO se envía por
+# SMTP (no hay envelope), los destinatarios reales van en un header Bcc
+# real — Gmail lo respeta y los oculta entre sí al momento en que TÚ le
+# des "Enviar" manualmente sobre este borrador.
+destinatarios = [e.strip() for e in EMAIL_TO.split(',') if e.strip()]
+
 msg = MIMEMultipart('mixed')
-msg['Subject']  = asunto
-msg['From']     = f"Monitor DIGEMID CONKOMERCO <{EMAIL_FROM}>"
-msg['To']       = EMAIL_FROM        # Solo el remitente visible en "Para"
-msg['Reply-To'] = EMAIL_FROM
+msg['Subject']    = asunto
+msg['From']       = f"Monitor DIGEMID CONKOMERCO <{EMAIL_FROM}>"
+msg['To']         = EMAIL_FROM
+msg['Bcc']        = ', '.join(destinatarios)
+msg['Reply-To']   = EMAIL_FROM
+msg['Date']       = formatdate(localtime=True)
+msg['Message-ID'] = make_msgid()
 msg.attach(MIMEText(html, 'html'))
 
 # Adjuntar Excel
@@ -179,14 +195,36 @@ encoders.encode_base64(adjunto)
 adjunto.add_header('Content-Disposition', f'attachment; filename="{excel_name}"')
 msg.attach(adjunto)
 
-# ✅ Lista de destinatarios solo para el envelope SMTP (no aparece en el correo)
-destinatarios = [e.strip() for e in EMAIL_TO.split(',') if e.strip()]
 
-with smtplib.SMTP(smtp_host, smtp_port) as server:
-    server.ehlo()
-    server.starttls()
-    server.login(smtp_user, smtp_pass)
-    server.sendmail(EMAIL_FROM, destinatarios, msg.as_string())
+def _encontrar_carpeta_borradores(imap: imaplib.IMAP4_SSL) -> str:
+    """Busca la carpeta con el atributo especial \\Drafts (RFC 6154) en vez de
+    asumir el nombre en inglés — si la cuenta de Gmail está en español, la
+    carpeta real puede llamarse '[Gmail]/Borradores' y no '[Gmail]/Drafts'."""
+    typ, folders = imap.list()
+    if typ == 'OK' and folders:
+        for f in folders:
+            linea = f.decode(errors='ignore') if isinstance(f, bytes) else f
+            if '\\Drafts' in linea:
+                m = re.search(r'"([^"]+)"\s*$', linea) or re.search(r'(\S+)\s*$', linea)
+                if m:
+                    return m.group(1).strip('"')
+    return '[Gmail]/Drafts'  # fallback si no se pudo detectar
 
-print(f"Correo enviado: {EMAIL_FROM} -> {len(destinatarios)} destinatarios (ocultos)")
+
+with imaplib.IMAP4_SSL(imap_host, imap_port) as imap:
+    imap.login(imap_user, imap_pass)
+    carpeta = _encontrar_carpeta_borradores(imap)
+    typ, _ = imap.append(
+        carpeta,
+        '\\Draft',
+        imaplib.Time2Internaldate(time.time()),
+        msg.as_bytes(),
+    )
+    imap.logout()
+
+if typ != 'OK':
+    raise RuntimeError(f"No se pudo guardar el borrador en '{carpeta}' (respuesta IMAP: {typ})")
+
+print(f"Borrador guardado en '{carpeta}': {EMAIL_FROM} (Bcc oculto: {len(destinatarios)} destinatarios)")
 print(f"Asunto: {asunto}")
+print("⚠️  El correo NO fue enviado — ábrelo en Gmail y dale Enviar manualmente.")

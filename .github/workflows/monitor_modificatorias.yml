@@ -72,8 +72,8 @@ jobs:
           path: output/modificatorias_digemid_*.xlsx
           retention-days: 30
 
-  send_email:
-    name: "2 Enviar correo con Excel adjunto"
+  draft_email:
+    name: "2 Dejar correo en Borradores"
     needs: scrape
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -93,10 +93,12 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Enviar correo con adjunto
+      - name: Guardar correo como borrador (IMAP, no se envia)
         env:
-          SMTP_HOST:         ${{ secrets.SMTP_HOST }}
-          SMTP_PORT:         ${{ secrets.SMTP_PORT }}
+          # Reutiliza las mismas credenciales de Gmail que ya tenias para
+          # SMTP — un app password de Gmail sirve para IMAP tambien. Solo
+          # asegurate de tener IMAP habilitado en la cuenta (Gmail ->
+          # Configuracion -> Reenvio y correo POP/IMAP -> Habilitar IMAP).
           SMTP_USER:         ${{ secrets.SMTP_USER }}
           SMTP_PASS:         ${{ secrets.SMTP_PASS }}
           TOTAL:             ${{ needs.scrape.outputs.total_modif }}
@@ -107,11 +109,11 @@ jobs:
           MOTOR:             ${{ needs.scrape.outputs.motor_analisis }}
           SIN_PDF_COUNT:     ${{ needs.scrape.outputs.sin_pdf_count }}
           TOTAL_SCRAPEADAS:  ${{ needs.scrape.outputs.total_scrapeadas }}
-        run: python3 scripts/send_email.py
+        run: python3 scripts/draft_email.py
 
   notify_failure:
     name: "3 Notificar fallo"
-    needs: [scrape, send_email]
+    needs: [scrape, draft_email]
     runs-on: ubuntu-latest
     # if: failure() no siempre detecta un job cancelado por timeout-minutes
     # (conclusión "cancelled", no "failure") — como pasó hoy con el runner
@@ -120,7 +122,7 @@ jobs:
       ${{
         always() && (
           needs.scrape.result == 'failure' || needs.scrape.result == 'cancelled' ||
-          needs.send_email.result == 'failure' || needs.send_email.result == 'cancelled'
+          needs.draft_email.result == 'failure' || needs.draft_email.result == 'cancelled'
         )
       }}
     steps:
