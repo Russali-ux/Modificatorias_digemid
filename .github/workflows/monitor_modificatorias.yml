@@ -9,27 +9,34 @@ on:
         description: "Paginas a scrapear (2 = ~20 modificatorias, filtra 10 de seguridad)"
         required: false
         default: "2"
+      max_filas:
+        description: "Maximo de filas de seguridad en el Excel"
+        required: false
+        default: "10"
       dry_run:
         description: "Dry run (no envia correo)"
         type: boolean
         default: false
 
+# Evita que un run manual y el cron golpeen el portal DIGEMID al mismo tiempo
+# (dos scrapers en paralelo fue lo que disparo el bloqueo del WAF).
+concurrency:
+  group: monitor-modificatorias
+  cancel-in-progress: false
+
 env:
   PYTHON_VERSION: "3.11"
   TZ: "America/Lima"
+  CLAUDE_MODEL: "claude-sonnet-4-6"    # cambiar a claude-sonnet-5 si se migra
   EMAIL_FROM: "conkosafe.ai@gmail.com"
-  EMAIL_TO: "finanzas@conkomerco.com,conkosafe.ai@gmail.com,july.maita@conkomerco.com,alex.rodriguez@conkomerco.com,angelica.aguero@conkomerco.com,aron.cortez@conkomerco.com,giancarlos.chafloque@conkomerco.com,vigilanciasanitaria@soltonpharma.com,farmacovigilancia@corval.com.pe,direccion.tecnica@corval.com.pe,azegarra@soltonpharma.com,fv@corporacioncobefar.com.pe,farmacovigilancia@greyinversiones.com,regulatorios@greyinversiones.com,fv.peru@sevenpharma.net,fv1.peru@sevenpharma.net,Regulatory.Peru@sevenpharma.net,farmacovigilancia@qmpharma.com,farmacovigilancia@perulab.com.pe,ricardo.barrantes@perulab.com.pe,patricia.medina@perulab.com.pe,farmacovigilancia@bago.com.pe,srosas@ferrer.com,pefarmacovigilancia@ferrer.com,dtecnica@corporacioncobefar.com.pe,jugas@munizlaw.com,nperez@munizlaw.com,mespinozaf@munizlaw.com,bmerchor@munizlaw.com"
+  # Lista de distribucion movida a un secret: contiene correos de clientes y
+  # el repositorio es publico.
+  EMAIL_TO: ${{ secrets.EMAIL_TO }}
 
 jobs:
 
   scrape:
     name: "1 Scraping Modificatorias DIGEMID"
-    # Vuelto a ubuntu-latest: el runner self-hosted RUSS no estuvo disponible
-    # en varios intentos (job colgado en "Waiting for a runner" por más de
-    # una hora). Se mantienen los reintentos con backoff (Opción 2) como red
-    # de seguridad contra el WAF de digemid.minsa.gob.pe en este runner.
-    # Si más adelante RUSS está confirmado online y quieres volver a probarlo,
-    # solo hay que cambiar esta línea a: runs-on: [self-hosted, Windows]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
@@ -54,30 +61,68 @@ jobs:
         shell: bash
         run: |
           pip install --upgrade pip
-          pip install requests beautifulsoup4 pandas openpyxl pymupdf anthropic
+          # Versiones pineadas: un cambio mayor del SDK anthropic rompia la
+          # llamada sin aviso en la corrida del lunes siguiente.
+          pip install \
+            requests==2.32.* \
+            beautifulsoup4==4.12.* \
+            pandas==2.2.* \
+            openpyxl==3.1.* \
+            pymupdf==1.24.* \
+            anthropic==0.40.*
+
+      # ── Diagnostico ANTES de scrapear ──────────────────────────────────────
+      # Si el secret no existe, ${{ secrets.X }} se resuelve a string vacio SIN
+      # error, el scraper cae al motor heuristico y no queda rastro de por que.
+      - name: Verificar credencial Claude
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import os, sys
+          k = os.environ.get("ANTHROPIC_API_KEY", "")
+          if not k:
+              print("::warning::ANTHROPIC_API_KEY vacia o inexistente -> motor heuristico")
+              sys.exit(0)
+          if not k.startswith("sk-ant-"):
+              print("::warning::ANTHROPIC_API_KEY con formato inesperado")
+          try:
+              import anthropic
+              c = anthropic.Anthropic(api_key=k)
+              m = c.messages.create(
+                  model=os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-6"),
+                  max_tokens=10,
+                  messages=[{"role": "user", "content": "responde solo: ok"}])
+              print("Claude API operativa ->", m.content[0].text.strip())
+          except Exception as e:
+              print(f"::warning::Claude API no operativa: {e}")
+          PY
 
       - name: Ejecutar scraper
         id: run
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           MAX_PAGINAS: ${{ github.event.inputs.max_paginas || '2' }}
+          MAX_FILAS:   ${{ github.event.inputs.max_filas   || '10' }}
         run: python3 scripts/run_scraper.py
 
       - name: Guardar Excel como artifact
+        # always(): si algo falla despues de generar el Excel, la evidencia
+        # se conserva igual para revision manual.
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: excel-modificatorias
-          # Ruta relativa dentro del checkout (antes /tmp/..., que no existe
-          # por defecto en Windows y hacía fallar el guardado del Excel)
           path: output/modificatorias_digemid_*.xlsx
           retention-days: 30
+          if-no-files-found: warn
 
   draft_email:
     name: "2 Dejar correo en Borradores"
     needs: scrape
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ always() && github.event.inputs.dry_run != 'true' && needs.scrape.result == 'success' }}
+    if: ${{ github.event.inputs.dry_run != 'true' && needs.scrape.result == 'success' }}
     steps:
       - name: Checkout repositorio
         uses: actions/checkout@v4
@@ -95,10 +140,8 @@ jobs:
 
       - name: Guardar correo como borrador (IMAP, no se envia)
         env:
-          # Reutiliza las mismas credenciales de Gmail que ya tenias para
-          # SMTP — un app password de Gmail sirve para IMAP tambien. Solo
-          # asegurate de tener IMAP habilitado en la cuenta (Gmail ->
-          # Configuracion -> Reenvio y correo POP/IMAP -> Habilitar IMAP).
+          # Un app password de Gmail sirve para IMAP tambien. Requiere IMAP
+          # habilitado: Gmail -> Configuracion -> Reenvio y correo POP/IMAP.
           SMTP_USER:         ${{ secrets.SMTP_USER }}
           SMTP_PASS:         ${{ secrets.SMTP_PASS }}
           TOTAL:             ${{ needs.scrape.outputs.total_modif }}
@@ -115,9 +158,8 @@ jobs:
     name: "3 Notificar fallo"
     needs: [scrape, draft_email]
     runs-on: ubuntu-latest
-    # if: failure() no siempre detecta un job cancelado por timeout-minutes
-    # (conclusión "cancelled", no "failure") — como pasó hoy con el runner
-    # RUSS sin tomar el job. Se revisa needs.*.result explícitamente.
+    # failure() no siempre detecta un job cancelado por timeout-minutes
+    # (conclusion "cancelled", no "failure"), asi que se revisan los results.
     if: >
       ${{
         always() && (

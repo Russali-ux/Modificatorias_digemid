@@ -52,10 +52,34 @@ def _get_con_reintentos(url: str, timeout: int = 30, reintentos: int = 3, espera
     return None
 
 # ── Glosario de tiempos regulatorios (D.S. 016-2011-SA) ──────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# TEXTOS ESTANDARIZADOS ConkoSafe IA — Modificatorias por seguridad
+# Estos tres textos son fijos por decisión de Gestión de Riesgos: no se dejan
+# al criterio del motor de análisis (Claude o heurístico) para que el reporte
+# sea homogéneo entre corridas y auditable.
+# ══════════════════════════════════════════════════════════════════════════════
+TITULO_REPORTE = "ConkoSafe IA — Modificatorias por seguridad DIGEMID"
+
+ACCION_SEGURIDAD = ("Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles "
+                    "- Gestión de Riesgos")
+TIEMPOS_SEGURIDAD = ("15 días hábiles para evaluar e informar al DIGEMID, "
+                     "finalizar proceso según tiempos de RD y evaluar efectividad")
+BASE_LEGAL_SEGURIDAD = "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C"
+
+# Tipos que este reporte trata como "de seguridad": reciben los textos fijos.
+TIPOS_SEGURIDAD = {
+    "ACTUALIZACION SEGURIDAD",
+    "REACCION ADVERSA",
+    "CONTRAINDICACION",
+    "ADVERTENCIA",
+    "SUSPENSION",
+    "CANCELACION",
+}
+
 GLOSARIO_TIEMPOS = [
     ("FICHA TECNICA",          "60 días hábiles desde notificación DIGEMID",                  "Art. 58 D.S. 016-2011-SA"),
     ("ROTULADO",               "90 días hábiles para implementar cambio de rotulado",          "Art. 62 D.S. 016-2011-SA"),
-    ("ACTUALIZACION SEGURIDAD","15 días hábiles para evaluar e informar al DIGEMID",           "Art. 55 D.S. 016-2011-SA / ICH E2C"),
+    ("ACTUALIZACION SEGURIDAD", TIEMPOS_SEGURIDAD,                                             BASE_LEGAL_SEGURIDAD),
     ("REACCION ADVERSA",       "15 días hábiles (RAM grave) / 30 días (no grave)",             "Art. 55 D.S. 016-2011-SA"),
     ("CONTRAINDICACION",       "30 días hábiles para actualizar FT y rotulado",                "Art. 58 D.S. 016-2011-SA"),
     ("ADVERTENCIA",            "30 días hábiles para actualizar FT y material informativo",    "Art. 58 D.S. 016-2011-SA"),
@@ -116,7 +140,7 @@ def _analizar_claude(texto: str) -> dict | None:
         import anthropic
         client = anthropic.Anthropic(api_key=api_key)
         msg = client.messages.create(
-            model="claude-sonnet-4-6",
+            model=os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-6"),
             max_tokens=600,
             messages=[{"role": "user", "content": _PROMPT.replace("{texto}", texto[:8000])}]
         )
@@ -283,7 +307,7 @@ def _enriquecer(item: dict, analizar_pdfs: bool = True) -> dict:
             "pdf_url":           None,
             "motor_analisis":    "Título (sin PDF)",
         })
-        return item
+        return _forzar_textos_seguridad(item)
 
     pdf_url, subtitulo = _obtener_pdf_url(url)
     item["pdf_url"] = pdf_url
@@ -297,7 +321,7 @@ def _enriquecer(item: dict, analizar_pdfs: bool = True) -> dict:
             "principio_activo": "", "titular_rs": "", "accion_requerida": "Sin PDF disponible",
             "resumen": "", "motor_analisis": "Sin PDF",
         })
-        return item
+        return _forzar_textos_seguridad(item)
 
     pdf_bytes = _descargar_pdf(pdf_url)
     if not pdf_bytes:
@@ -308,7 +332,7 @@ def _enriquecer(item: dict, analizar_pdfs: bool = True) -> dict:
             "principio_activo": "", "titular_rs": "", "accion_requerida": "Error descarga PDF",
             "resumen": "", "motor_analisis": "Error PDF",
         })
-        return item
+        return _forzar_textos_seguridad(item)
 
     texto = _extraer_texto(pdf_bytes)
 
@@ -335,6 +359,18 @@ def _enriquecer(item: dict, analizar_pdfs: bool = True) -> dict:
     item["accion_requerida"]  = resultado.get("accion_requerida", "")
     item["resumen"]           = resultado.get("resumen", "")
     item["motor_analisis"]    = motor
+    return _forzar_textos_seguridad(item)
+
+
+def _forzar_textos_seguridad(item: dict) -> dict:
+    """Sobrescribe Acción Requerida / Indicador de Tiempos / Base Legal con los
+    textos estandarizados cuando la modificatoria es de tipo seguridad.
+    Sin esto, Claude API devuelve una acción redactada libremente y cada fila
+    del Excel diría algo distinto."""
+    if item.get("tipo_modificacion") in TIPOS_SEGURIDAD:
+        item["accion_requerida"]  = ACCION_SEGURIDAD
+        item["indicador_tiempos"] = TIEMPOS_SEGURIDAD
+        item["base_legal"]        = BASE_LEGAL_SEGURIDAD
     return item
 
 
@@ -450,7 +486,7 @@ def scrapear_modificaciones(max_paginas: int = 2,
 # ══════════════════════════════════════════════════════════════════════════════
 # EXPORTAR EXCEL
 # ══════════════════════════════════════════════════════════════════════════════
-def exportar_excel(df: pd.DataFrame, ruta: str):
+def exportar_excel(df: pd.DataFrame, ruta: str, titulo: str = TITULO_REPORTE):
     import openpyxl
     from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
     from openpyxl.utils import get_column_letter
@@ -483,18 +519,44 @@ def exportar_excel(df: pd.DataFrame, ruta: str):
     h_font = Font(bold=True, color="FFFFFF", name="Arial", size=10)
     d_font = Font(name="Arial", size=9)
 
+    # ── Cabecera de reporte ConkoSafe (filas 1-2) ─────────────────────────────
+    last_col = get_column_letter(len(COLS))
+    if "fecha_publicacion" in df.columns and len(df):
+        _f = pd.to_datetime(df["fecha_publicacion"], errors="coerce").dropna()
+        desde = _f.min().strftime("%d/%m/%Y") if len(_f) else "—"
+        hasta = _f.max().strftime("%d/%m/%Y") if len(_f) else "—"
+    else:
+        desde = hasta = "—"
+
+    ws.merge_cells(f"A1:{last_col}1")
+    t = ws["A1"]
+    t.value = f"{titulo}  |  Desde {desde} hasta {hasta}"
+    t.font = Font(bold=True, size=14, color="FFFFFF", name="Arial")
+    t.alignment = Alignment(horizontal="center", vertical="center")
+    for ci in range(1, len(COLS) + 1):
+        ws.cell(row=1, column=ci).fill = h_fill
+    ws.row_dimensions[1].height = 34
+
+    ws.merge_cells(f"A2:{last_col}2")
+    s = ws["A2"]
+    s.value = f"Generado: {datetime.now():%d/%m/%Y %H:%M}  |  Registros: {len(df)}"
+    s.font = Font(italic=True, size=10, color="595959", name="Arial")
+    s.alignment = Alignment(horizontal="left", vertical="center")
+    ws.row_dimensions[2].height = 18
+
+    # ── Encabezados de columna (fila 3) ───────────────────────────────────────
     for ci, (label, _, width) in enumerate(COLS, 1):
-        c = ws.cell(row=1, column=ci, value=label)
+        c = ws.cell(row=3, column=ci, value=label)
         c.font = h_font; c.fill = h_fill; c.border = border
         c.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
         ws.column_dimensions[get_column_letter(ci)].width = width
-    ws.row_dimensions[1].height = 28
+    ws.row_dimensions[3].height = 28
 
     URGENCIA_BG    = {"INMEDIATA": "FCE4D6", "PREVENTIVA": "FFF2CC", "INFORMATIVA": "EBF3FB"}
     URGENCIA_COLOR = {"INMEDIATA": "C00000", "PREVENTIVA": "ED7D31", "INFORMATIVA": "2E75B6"}
     TIEMPOS_FILL   = PatternFill("solid", start_color="E2EFDA")  # verde claro
 
-    for ri, row in enumerate(df.itertuples(index=False), 2):
+    for ri, row in enumerate(df.itertuples(index=False), 4):
         urgencia = getattr(row, "urgencia", None) or "INFORMATIVA"
         row_fill = PatternFill("solid", start_color=URGENCIA_BG.get(urgencia, "F2F2F2"))
         for ci, (_, field, _) in enumerate(COLS, 1):
@@ -521,12 +583,12 @@ def exportar_excel(df: pd.DataFrame, ruta: str):
                 c.font = Font(name="Arial", size=9, bold=True)
         ws.row_dimensions[ri].height = 55
 
-    ws.freeze_panes = "A2"
-    ws.auto_filter.ref = f"A1:{get_column_letter(len(COLS))}{len(df)+1}"
+    ws.freeze_panes = "A4"
+    ws.auto_filter.ref = f"A3:{last_col}{len(df)+3}"
 
     # ── Hoja 2: Resumen Diario ────────────────────────────────────────────────
     ws2 = wb.create_sheet("Resumen Diario")
-    ws2["A1"] = "Reporte Modificatorias DIGEMID"
+    ws2["A1"] = titulo
     ws2["A1"].font = Font(bold=True, size=13, name="Arial", color="1F4E79")
     ws2["A3"] = "Fecha captura:"; ws2["B3"] = datetime.now().strftime("%d/%m/%Y %H:%M")
     ws2["A4"] = "Total modificatorias:"; ws2["B4"] = len(df)
@@ -566,8 +628,11 @@ if __name__ == "__main__":
 
     # Filtrar solo ACTUALIZACION SEGURIDAD y tomar las 10 más recientes
     if "tipo_modificacion" in df.columns:
-        df = df[df["tipo_modificacion"] == "ACTUALIZACION SEGURIDAD"].head(10).reset_index(drop=True)
-    print(f"📌 Filtradas: {len(df)} modificatorias de tipo ACTUALIZACION SEGURIDAD")
+        df = df[df["tipo_modificacion"].isin(TIPOS_SEGURIDAD)]
+        if "fecha_publicacion" in df.columns:
+            df = df.sort_values("fecha_publicacion", ascending=False)
+        df = df.head(10).reset_index(drop=True)
+    print(f"📌 Filtradas: {len(df)} modificatorias de seguridad")
 
     fecha = datetime.now().strftime("%Y%m%d_%H%M")
     out_dir = os.path.join(os.getcwd(), "output")
