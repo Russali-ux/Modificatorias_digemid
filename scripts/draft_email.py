@@ -45,7 +45,7 @@ if n_inm > 0:
     badge_texto = f"ATENCION: {n_inm} modificatoria(s) con accion INMEDIATA requerida"
 elif n_pre > 0:
     badge_color = "#ED7D31"
-    badge_texto = f"{n_pre} modificatoria(s) PREVENTIVA(S) — Evaluar en 15 dias habiles"
+    badge_texto = f"{n_pre} modificatoria(s) PREVENTIVA(S) — Evaluar en 15 dias según procedimiento de gestión de riesgos"
 else:
     badge_color = "#2E75B6"
     badge_texto = f"{n_tot} actualizaciones de seguridad — Sin urgencias criticas"
@@ -138,8 +138,8 @@ html = (
     'border-radius:0 8px 8px 0;">'
     '<p style="margin:0;font-size:12px;color:#7F4B00;">'
     '<strong>&#9201; Plazo regulatorio:</strong> Las actualizaciones de seguridad requieren evaluaci&oacute;n '
-    'e informe a DIGEMID en <strong>15 d&iacute;as h&aacute;biles</strong> desde la publicaci&oacute;n '
-    '(Art. 55 D.S. 016-2011-SA / ICH E2C).'
+    'de gesti&oacute;n de riesgos en <strong>15 d&iacute;as h&aacute;biles</strong> y realizar las acciones '
+    'mandatorios DIGEMID seg&uacute;n plazos establecidos en la resoluci&oacute;n.'
     '</p></div></td></tr>'
     '<tr><td style="background:#F4F6F9;padding:14px 32px;border-top:1px solid #E5E8ED;">'
     '<table width="100%" cellpadding="0" cellspacing="0"><tr>'
@@ -156,12 +156,7 @@ html = (
 
 # Asunto
 fecha_corta = fecha[:10] if fecha else ""
-if n_inm > 0:
-    asunto = f"[DIGEMID MOD {fecha_corta}] {n_inm} modificatoria(s) INMEDIATA(S) — Accion requerida"
-elif n_pre > 0:
-    asunto = f"[DIGEMID MOD {fecha_corta}] {n_pre} actualizacion(es) de seguridad — Evaluar en 15 dias"
-else:
-    asunto = f"[DIGEMID MOD {fecha_corta}] {n_tot} actualizaciones de seguridad — Sin urgencias"
+asunto = f"CONKOMERCO Modificatorias ({fecha_corta})"
 
 # Buscar Excel generado
 archivos = glob.glob('/tmp/modificatorias_digemid_*.xlsx')

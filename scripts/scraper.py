@@ -492,11 +492,11 @@ def exportar_excel(df: pd.DataFrame, ruta: str, titulo: str = TITULO_REPORTE):
     from openpyxl.utils import get_column_letter
 
     COLS = [
+        ("Fecha Publicación",     "fecha_publicacion", 14),
         ("N° Modificación",      "n_modificacion",    45),
         ("Producto / IFA",        "producto",          30),
         ("Principio Activo",      "principio_activo",  25),
         ("Titular RS",            "titular_rs",        30),
-        ("Fecha Publicación",     "fecha_publicacion", 14),
         ("Tipo de Modificación",  "tipo_modificacion", 22),
         ("Urgencia",              "urgencia",          12),
         ("Acción Requerida",      "accion_requerida",  45),
