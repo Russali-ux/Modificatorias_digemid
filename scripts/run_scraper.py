@@ -81,18 +81,26 @@ if 'tipo_modificacion' in df.columns:
     # descartar las mas recientes sin dejar rastro.
     if 'fecha_publicacion' in df.columns:
         df = df.sort_values('fecha_publicacion', ascending=False)
-    if len(df) > MAX_FILAS:
-        print(f"ADVERTENCIA: {len(df)} relevantes -> se recortan a las {MAX_FILAS} mas recientes")
-    df = df.head(MAX_FILAS).reset_index(drop=True)
 
-print(f"Filtradas: {len(df)} modificatorias relevantes "
-      f"(categorias: {', '.join(sorted(TIPOS_SEGURIDAD))})")
+# df_relevantes: TODAS las relevantes, sin recortar -> alimenta JSON/MD/Supabase/tab.
+# df_email: solo las MAX_FILAS mas recientes -> alimenta el Excel adjunto del correo,
+# para que el correo siga siendo corto aunque el tab muestre el historico completo.
+df_relevantes = df.reset_index(drop=True)
+if len(df_relevantes) > MAX_FILAS:
+    print(f"AVISO: {len(df_relevantes)} relevantes -> el correo solo adjunta las {MAX_FILAS} mas recientes "
+          f"(el tab de Alertas-analyzer y Supabase reciben las {len(df_relevantes)} completas)")
+df_email = df_relevantes.head(MAX_FILAS).reset_index(drop=True)
 
-exportar_excel(df, ruta)
+print(f"Filtradas: {len(df_relevantes)} modificatorias relevantes "
+      f"(categorias: {', '.join(sorted(TIPOS_SEGURIDAD))}); "
+      f"{len(df_email)} van al Excel/correo")
+
+exportar_excel(df_email, ruta)
 
 # ── Derivar JSON (fuente para Supabase) y resumen MD (revisión humana) ─────
 # Ambos quedan commiteados en el repo junto al Excel crudo: raw_data/ guarda
-# el Excel de cada corrida, data/ y summaries/ guardan sus derivados.
+# el Excel de cada corrida (recortado para el correo), data/ y summaries/
+# guardan el conjunto COMPLETO de relevantes (sin el recorte de MAX_FILAS).
 from exportadores import exportar_json, exportar_resumen_md
 
 fecha_dia    = datetime.now().strftime('%Y%m%d')
@@ -102,13 +110,14 @@ ruta_json_dia    = os.path.join(data_dir, f"modificatorias_{fecha_dia}.json")
 ruta_json_latest = os.path.join(data_dir, "modificatorias_latest.json")
 ruta_resumen_md  = os.path.join(summary_dir, f"resumen_{datetime.now().strftime('%Y-%m-%d')}.md")
 
-registros = exportar_json(df, ruta_json_dia, ruta_json_latest)
-exportar_resumen_md(df, ruta_resumen_md, fecha_reporte=datetime.now().strftime('%Y/%m/%d'))
+registros = exportar_json(df_relevantes, ruta_json_dia, ruta_json_latest)
+exportar_resumen_md(df_relevantes, ruta_resumen_md, fecha_reporte=datetime.now().strftime('%Y/%m/%d'))
 
 # ── Subir a Supabase (tabla modificatorias_digemid, para el tab de Alertas-analyzer) ──
 # Se lee del JSON recién escrito (no del DataFrame en memoria): así Supabase
 # siempre refleja exactamente lo que quedó commiteado en data/, que es la
-# fuente de verdad versionada del pipeline.
+# fuente de verdad versionada del pipeline. Como data/ ya trae el conjunto
+# completo (sin recorte), Supabase y el tab también quedan completos.
 try:
     from supabase_sync import subir_desde_json
     subir_desde_json(ruta_json_latest)
@@ -118,15 +127,15 @@ except Exception as e:
     # No se aborta el run por un fallo de Supabase: el Excel y el correo ya estan listos.
     print(f"AVISO: fallo al sincronizar con Supabase: {e}")
 
-# ── Outputs para el job de correo ──────────────────────────────────────────
-total       = len(df)
-inmediatas  = int((df['urgencia'] == 'INMEDIATA').sum())  if 'urgencia' in df.columns else 0
-preventivas = int((df['urgencia'] == 'PREVENTIVA').sum()) if 'urgencia' in df.columns else 0
+# ── Outputs para el job de correo (describen el Excel adjunto, es decir df_email) ──
+total       = len(df_email)
+inmediatas  = int((df_email['urgencia'] == 'INMEDIATA').sum())  if 'urgencia' in df_email.columns else 0
+preventivas = int((df_email['urgencia'] == 'PREVENTIVA').sum()) if 'urgencia' in df_email.columns else 0
 fecha_fmt   = datetime.now().strftime('%d/%m/%Y %H:%M')
 
 # Motor REAL segun lo que quedo en el DataFrame, no lo que se esperaba.
-if 'motor_analisis' in df.columns and len(df):
-    motor = ' / '.join(sorted(set(df['motor_analisis'].dropna().astype(str))))
+if 'motor_analisis' in df_email.columns and len(df_email):
+    motor = ' / '.join(sorted(set(df_email['motor_analisis'].dropna().astype(str))))
 else:
     motor = motor_esperado
 if motor_esperado == 'Claude API' and 'Claude API' not in motor:
@@ -147,5 +156,6 @@ if github_output:
 else:
     print("GITHUB_OUTPUT no definido (ejecucion local): se omiten los outputs")
 
-print(f"Excel: {ruta} | Total: {total} | Inmediatas: {inmediatas} | "
-      f"Preventivas: {preventivas} | Motor: {motor} | Sin PDF: {sin_pdf}/{total_scrapeadas}")
+print(f"Excel (correo): {ruta} | Total en correo: {total} | Inmediatas: {inmediatas} | "
+      f"Preventivas: {preventivas} | Motor: {motor} | Sin PDF: {sin_pdf}/{total_scrapeadas} | "
+      f"Total en tab/Supabase: {len(df_relevantes)}")
