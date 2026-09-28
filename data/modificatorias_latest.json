@@ -4,7 +4,7 @@
     "producto": "Sunitinib",
     "fecha_publicacion": "2026-09-02",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-15-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:55",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M15-26_Sunitinib.pdf",
     "subtitulo": "Informe sobre seguridad de los productos farmacéuticos con el IFA Sunitinib",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -14,7 +14,7 @@
     "principio_activo": "Sunitinib",
     "titular_rs": "Titulares de los 32 Registros Sanitarios vigentes de productos farmacéuticos que contienen Sunitinib autorizados por DIGEMID",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID ordena la actualización de la información de seguridad de todos los productos farmacéuticos que contienen Sunitinib registrados en Perú, para incluir la encefalopatía hiperamonémica como advertencia y reacción adversa de frecuencia no conocida, basándose en la evaluación del PRAC de la EMA y la TGA, que establecieron una relación causal razonable entre Sunitinib y dicha complicación potencialmente mortal. Se recomienda a los profesionales de salud monitorear los niveles de amoníaco sérico en pacientes que presenten letargo inexplicable o cambios en el estado mental durante el tratamiento.",
+    "resumen": "DIGEMID ordena la actualización de la información de seguridad de todos los productos farmacéuticos que contienen Sunitinib registrados en Perú, para incluir la encefalopatía hiperamonémica como nueva advertencia y reacción adversa de frecuencia no conocida, en línea con las recomendaciones del PRAC de la EMA y la TGA de Australia. Esta medida responde a la evidencia de una relación causal razonablemente posible entre Sunitinib y dicha complicación potencialmente mortal, caracterizada por niveles elevados de amoníaco en sangre y alteración del estado mental.",
     "motor_analisis": "Claude API"
   },
   {
@@ -22,7 +22,7 @@
     "producto": "ROCURONIO",
     "fecha_publicacion": "2026-09-02",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-14-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:55",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M14-26_Rocuronio.pdf",
     "subtitulo": "Informe sobre seguridad de los productos farmacéuticos con el IFA ROCURONIO",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -30,9 +30,9 @@
     "indicador_tiempos": "15 días hábiles para evaluar e informar al DIGEMID, finalizar proceso según tiempos de RD y evaluar efectividad",
     "base_legal": "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C",
     "principio_activo": "Bromuro de Rocuronio",
-    "titular_rs": "Titulares de los 13 Registros Sanitarios vigentes de productos farmacéuticos que contienen Bromuro de Rocuronio autorizados por DIGEMID",
+    "titular_rs": "No especificado (aplica a todos los titulares de los 13 Registros Sanitarios vigentes de productos que contienen Bromuro de Rocuronio)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID ordena la actualización de la información de seguridad de todos los registros sanitarios vigentes de productos que contienen Bromuro de Rocuronio, incorporando en la Ficha Técnica y Prospecto nuevas advertencias sobre el riesgo de crisis hipertensiva en pacientes con feocromocitoma y reacciones de hipersensibilidad severa/anafilaxia asociadas al complejo sugammadex-rocuronio, en línea con las recomendaciones del PRAC/EMA, AEMPS y TGA.",
+    "resumen": "DIGEMID ordena la actualización de la información de seguridad de los 13 Registros Sanitarios vigentes de productos con Bromuro de Rocuronio, incorporando advertencias sobre crisis hipertensivas en pacientes con feocromocitoma y reacciones de hipersensibilidad graves (incluyendo anafilaxia) vinculadas al complejo sugammadex-rocuronio, en alineación con las recomendaciones del PRAC/EMA, AEMPS y TGA.",
     "motor_analisis": "Claude API"
   },
   {
@@ -40,7 +40,7 @@
     "producto": "APIXABÁN, RIVAROXABÁN y DABIGATRAN",
     "fecha_publicacion": "2026-09-02",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-13-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:55",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M13-26_Anticoagulantes.pdf",
     "subtitulo": "Informe sobre seguridad de los productos farmacéuticos con el IFA: APIXABÁN, RIVAROXABÁN y DABIGATRAN",
     "tipo_modificacion": "REACCION ADVERSA",
@@ -50,7 +50,7 @@
     "principio_activo": "Apixabán",
     "titular_rs": "No especificado en el texto (aplica a todos los titulares de registros sanitarios de productos que contienen Apixabán)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID emite resolución directoral ordenando la actualización de la ficha técnica y prospecto de productos que contienen Apixabán 2.5 mg, para incorporar la reacción adversa 'Nefropatía relacionada con anticoagulantes' con frecuencia no conocida, en línea con la recomendación del CHMP/PRAC de la EMA del 30 de enero de 2025. Adicionalmente, se actualizan las advertencias sobre uso concomitante con AAS en pacientes con fibrilación auricular y riesgo de sangrado en pacientes con cáncer activo.",
+    "resumen": "DIGEMID emite resolución directoral ordenando la actualización de la ficha técnica y prospecto de productos que contienen Apixabán para añadir la reacción adversa 'Nefropatía relacionada con anticoagulantes' con frecuencia no conocida, en concordancia con la recomendación del CHMP de la EMA publicada el 30 de enero de 2025. Adicionalmente, se actualizan las advertencias sobre uso concomitante con AAS y el riesgo en pacientes con cáncer activo.",
     "motor_analisis": "Claude API"
   },
   {
@@ -58,7 +58,7 @@
     "producto": "Imiglucerasa",
     "fecha_publicacion": "2026-07-17",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-12-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:55",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M12-26_Imiglucerasa.pdf",
     "subtitulo": "Informe sobre seguridad de los productos farmacéuticos que contienen Imiglucerasa",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -66,9 +66,9 @@
     "indicador_tiempos": "15 días hábiles para evaluar e informar al DIGEMID, finalizar proceso según tiempos de RD y evaluar efectividad",
     "base_legal": "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C",
     "principio_activo": "Imiglucerasa",
-    "titular_rs": "No especificado en el texto (Titular del Registro Sanitario de ABCERTIN)",
+    "titular_rs": "No especificado en el texto (TRS de Abcertin)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID evalúa el Informe Periódico de Seguridad (IPS) de ABCERTIN (Imiglucerasa) correspondiente al período noviembre 2024 - noviembre 2025, identificando diferencias entre la ficha técnica aprobada en Perú y la aprobada por la autoridad coreana MFDS, que incluyen nuevas precauciones sobre hipertensión pulmonar y neumonía, así como información adicional sobre reacciones adversas por grupos etarios. Se requiere la actualización de la ficha técnica local y la presentación de narrativas sobre 3 muertes registradas en poscomercialización.",
+    "resumen": "DIGEMID evalúa el Informe Periódico de Seguridad (IPS) de Abcertin (Imiglucerasa) correspondiente al período noviembre 2024 - noviembre 2025, identificando diferencias entre la ficha técnica aprobada en Perú y la versión aprobada por la autoridad coreana (MFDS), que incluye nuevas precauciones sobre hipertensión pulmonar, neumonía y reacciones de hipersensibilidad, así como información adicional de reacciones adversas poscomercialización en poblaciones pediátrica y adulta.",
     "motor_analisis": "Claude API"
   },
   {
@@ -76,7 +76,7 @@
     "producto": "Trastuzumab deruxtecan",
     "fecha_publicacion": "2026-07-17",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-11-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:55",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M11-26_Trastuzumab.pdf",
     "subtitulo": "Informe sobre seguridad de los productos farmacéuticos que contienen Trastuzumab deruxtecan",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -84,9 +84,9 @@
     "indicador_tiempos": "15 días hábiles para evaluar e informar al DIGEMID, finalizar proceso según tiempos de RD y evaluar efectividad",
     "base_legal": "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C",
     "principio_activo": "Trastuzumab deruxtecan",
-    "titular_rs": "No especificado en el texto (Titular de Registro Sanitario de ENHERTU)",
+    "titular_rs": "No especificado en el texto (Titular del Registro Sanitario de Enhertu)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID ordena la actualización de la ficha técnica de ENHERTU (trastuzumab deruxtecan) en Perú para incorporar la pancitopenia como reacción adversa frecuente, conforme a la recomendación del PRAC y las actualizaciones ya aprobadas por FDA, EMA y MHRA. La ficha técnica peruana actualmente vigente presenta omisiones de seguridad respecto a las versiones autorizadas en dichas agencias regulatorias de referencia.",
+    "resumen": "DIGEMID ordena la actualización de la ficha técnica de Enhertu (trastuzumab deruxtecan) en Perú para incorporar la pancitopenia como reacción adversa frecuente, omisión identificada al comparar la versión local con las fichas técnicas aprobadas por FDA, EMA y MHRA. Esta modificación se basa en la evaluación del Informe Periódico de Seguridad (IPS) correspondiente al periodo abril-octubre 2025 y en la recomendación del PRAC adoptada por el CHMP el 30 de enero de 2025.",
     "motor_analisis": "Claude API"
   },
   {
@@ -94,7 +94,7 @@
     "producto": "Ustekinumab",
     "fecha_publicacion": "2026-07-17",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-10-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:55",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M10-26_Ustekinumab.pdf",
     "subtitulo": "Informe sobre seguridad de los productos farmacéuticos que contienen Ustekinumab",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -104,7 +104,7 @@
     "principio_activo": "Ustekinumab",
     "titular_rs": "No especificado en el texto (titular del registro sanitario de Steqeyma)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID identifica omisiones de seguridad en la ficha técnica peruana de Steqeyma (Ustekinumab) respecto a las versiones aprobadas por FDA y EMA, incluyendo advertencias sobre vulnerabilidad a infecciones específicas por bloqueo IL-12/IL-23, aparición de carcinomas de células escamosas, Síndrome de Encefalopatía Posterior Reversible (SEPR), neumonía intersticial y reacciones alérgicas por polisorbato 80. Se requiere la actualización de los documentos de información del producto y un análisis de seguridad específico sobre el excipiente polisorbato 80 en el próximo Informe Periódico de Seguridad.",
+    "resumen": "DIGEMID identificó omisiones de seguridad en la ficha técnica peruana de Steqeyma (Ustekinumab) respecto a las versiones aprobadas por FDA y EMA, que incluyen advertencias sobre SEPR, infecciones graves por bloqueo IL-12/IL-23, carcinomas cutáneos de células escamosas, neumonía intersticial y reacciones alérgicas por polisorbato 80. Se requiere la actualización de la ficha técnica e inserto con dicha información y un análisis específico de seguridad sobre polisorbato 80 en el próximo IPS.",
     "motor_analisis": "Claude API"
   },
   {
@@ -112,7 +112,7 @@
     "producto": "Ixekizumab",
     "fecha_publicacion": "2026-07-17",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-09-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:55",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M09-26_Ixekizumab.pdf",
     "subtitulo": "Informe sobre seguridad de los productos farmacéuticos que contienen Ixekizumab",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -120,9 +120,9 @@
     "indicador_tiempos": "15 días hábiles para evaluar e informar al DIGEMID, finalizar proceso según tiempos de RD y evaluar efectividad",
     "base_legal": "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C",
     "principio_activo": "Ixekizumab",
-    "titular_rs": "No especificado explícitamente en el texto (titular del registro sanitario de TALTZ en Perú)",
+    "titular_rs": "No especificado en el texto (titular del registro sanitario de TALTZ en Perú)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID evalúa el Informe Periódico de Seguridad de TALTZ (Ixekizumab) correspondiente al periodo octubre 2024 - octubre 2025, identificando actualizaciones de seguridad no presentes en la versión peruana vigente, que incluyen nuevas reacciones adversas postcomercialización (erupciones eccematosas, eccema dishidrótico y dermatitis exfoliativa) y advertencias adicionales sobre infecciones oportunistas graves y enfermedad inflamatoria intestinal, aprobadas por FDA y TGA. Se requiere la actualización de la ficha técnica local para reflejar dichos cambios.",
+    "resumen": "DIGEMID evalúa el Informe Periódico de Seguridad (IPS) de TALTZ (Ixekizumab) correspondiente al período octubre 2024 - octubre 2025, identificando actualizaciones de seguridad aprobadas por FDA y TGA no presentes en la versión peruana autorizada. Se requiere la actualización de la ficha técnica local para incluir nuevas reacciones adversas postcomercialización (erupciones eccematosas, eccema dishidrótico y dermatitis exfoliativa) y reforzar las advertencias sobre infecciones oportunistas graves y enfermedad inflamatoria intestinal.",
     "motor_analisis": "Claude API"
   },
   {
@@ -130,7 +130,7 @@
     "producto": "Caspofungina",
     "fecha_publicacion": "2026-04-21",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-08-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:55",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M08-26_Caspofungina.pdf",
     "subtitulo": "Informe sobre seguridad de los productos farmacéuticos que contienen Caspofungina",
     "tipo_modificacion": "ADVERTENCIA",
@@ -138,9 +138,9 @@
     "indicador_tiempos": "15 días hábiles para evaluar e informar al DIGEMID, finalizar proceso según tiempos de RD y evaluar efectividad",
     "base_legal": "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C",
     "principio_activo": "Caspofungina",
-    "titular_rs": "Todos los titulares de registros sanitarios vigentes de productos farmacéuticos que contienen Caspofungina (20 productos registrados en Perú)",
+    "titular_rs": "Todos los titulares de registro sanitario de productos farmacéuticos que contienen Caspofungina (20 productos autorizados en Perú)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID dispone la actualización de las fichas técnicas de los 20 productos farmacéuticos que contienen Caspofungina registrados en Perú, para incluir una advertencia sobre el riesgo de adsorción masiva del fármaco en membranas de poliacrilonitrilo (PAN) utilizadas durante el tratamiento sustitutivo renal continuo (TSRC), fenómeno que genera concentraciones subterapéuticas, fracaso terapéutico y potencial desenlace fatal. Esta medida se fundamenta en comunicaciones de seguridad de la EMA, ANSM y otras autoridades reguladoras de alta vigilancia sanitaria.",
+    "resumen": "DIGEMID dispone la actualización de la ficha técnica de todos los productos que contienen Caspofungina para incluir una advertencia sobre el riesgo de concentraciones subterapéuticas y fracaso terapéutico en pacientes que reciben tratamiento sustitutivo renal continuo (TSRC) con membranas de poliacrilonitrilo (PAN), debido a la adsorción masiva e irreversible del fármaco en dichas membranas, lo que puede derivar en empeoramiento de la infección sistémica y muerte. Esta actualización se fundamenta en comunicaciones de seguridad emitidas por la EMA, ANSM y otras autoridades reguladoras de alta vigilancia sanitaria.",
     "motor_analisis": "Claude API"
   },
   {
@@ -148,7 +148,7 @@
     "producto": "Fentanilo",
     "fecha_publicacion": "2026-02-05",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-05-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:56",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M05-26_Fentanilo.pdf",
     "subtitulo": "Seguridad de los productos farmacéuticos que contienen Fentanilo;",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -156,9 +156,9 @@
     "indicador_tiempos": "15 días hábiles para evaluar e informar al DIGEMID, finalizar proceso según tiempos de RD y evaluar efectividad",
     "base_legal": "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C",
     "principio_activo": "Fentanilo",
-    "titular_rs": "Titulares de Registros Sanitarios de productos farmacéuticos que contienen Fentanilo (no especificado individualmente)",
+    "titular_rs": "Titulares de Registros Sanitarios de medicamentos que contienen Fentanilo (no especificado un único titular)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID emite resolución directoral ordenando la actualización de la información de seguridad en fichas técnicas e insertos de productos farmacéuticos con Fentanilo (parche transdérmico y solución inyectable), incorporando nuevas advertencias sobre síndrome de abstinencia opioide neonatal, disfunción del esfínter de Oddi, trastornos esofágicos, apnea central del sueño, hiperalgesia, síndrome serotoninérgico e interacciones con CYP3A4, en concordancia con la información de seguridad actualizada publicada por la agencia reguladora australiana TGA.",
+    "resumen": "DIGEMID dispone la actualización de seguridad de los productos farmacéuticos que contienen Fentanilo (parche transdérmico y solución inyectable), en base a información emitida por la agencia reguladora australiana (TGA), incorporando nuevas advertencias sobre síndrome de abstinencia neonatal, disfunción del esfínter de Oddi, trastornos esofágicos, apnea central del sueño, hiperalgesia, síndrome serotoninérgico e interacciones con CYP3A4. Los titulares deben actualizar la Ficha Técnica y el rotulado de sus productos conforme a los cambios señalados en la resolución.",
     "motor_analisis": "Claude API"
   },
   {
@@ -166,17 +166,17 @@
     "producto": "Progestinas",
     "fecha_publicacion": "2026-02-05",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-06-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:55",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M06-26_Progestinas.pdf",
     "subtitulo": "Informe sobre seguridad de los productos farmacéuticos que contienen progestinas;",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
     "urgencia": "PREVENTIVA",
     "indicador_tiempos": "15 días hábiles para evaluar e informar al DIGEMID, finalizar proceso según tiempos de RD y evaluar efectividad",
     "base_legal": "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C",
-    "principio_activo": "Progestinas (acetato de medroxiprogesterona, nomegestrol, clormadinona)",
+    "principio_activo": "Progestinas (nomegestrol, clormadinona, acetato de medroxiprogesterona)",
     "titular_rs": "Titulares de registros sanitarios de productos farmacéuticos que contienen progestinas",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID emite resolución directoral ordenando la actualización de la información de seguridad de productos farmacéuticos que contienen progestinas (acetato de medroxiprogesterona en dosis altas, nomegestrol y clormadinona) para incorporar el meningioma como contraindicación, advertencia y reacción adversa de frecuencia desconocida. La medida se basa en recomendaciones de la EMA, PRAC y agencias reguladoras europeas que identificaron un mayor riesgo de desarrollo de meningioma asociado al uso prolongado de estos anticonceptivos hormonales.",
+    "resumen": "DIGEMID emite resolución directoral para actualizar la información de seguridad de productos farmacéuticos que contienen progestinas (nomegestrol, clormadinona y acetato de medroxiprogesterona en dosis altas), incorporando el meningioma como contraindicación, advertencia y reacción adversa de frecuencia desconocida, en concordancia con las recomendaciones del PRAC/EMA y agencias reguladoras europeas. Los titulares de registro sanitario deberán actualizar sus fichas técnicas, implementar monitoreo de pacientes y emitir comunicaciones directas a profesionales de salud.",
     "motor_analisis": "Claude API"
   },
   {
@@ -184,7 +184,7 @@
     "producto": "Clorhexidina",
     "fecha_publicacion": "2026-02-05",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-07-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:55",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M07-26_Clorhexidina.pdf",
     "subtitulo": "Informe sobre seguridad de los productos farmacéuticos que contienen Clorhexidina;",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -192,9 +192,9 @@
     "indicador_tiempos": "15 días hábiles para evaluar e informar al DIGEMID, finalizar proceso según tiempos de RD y evaluar efectividad",
     "base_legal": "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C",
     "principio_activo": "Clorhexidina",
-    "titular_rs": "Todos los titulares de registro sanitario de productos farmacéuticos que contienen Clorhexidina",
+    "titular_rs": "Todos los titulares de registros sanitarios de productos farmacéuticos que contienen Clorhexidina",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID ordena la actualización de la información de seguridad de todos los productos farmacéuticos que contienen Clorhexidina de uso cutáneo, incorporando advertencias sobre el riesgo de lesión corneal grave y daño visual permanente por exposición ocular accidental, incluyendo casos que han requerido trasplante de córnea, en base a recomendaciones del PRAC de la EMA y la AEMPS.",
+    "resumen": "DIGEMID ordena la actualización de la información de seguridad de todos los productos farmacéuticos que contienen Clorhexidina de uso cutáneo, incorporando nuevas advertencias sobre el riesgo de lesiones corneales graves e irreversibles —incluyendo casos que han requerido trasplante de córnea— por exposición ocular accidental durante procedimientos quirúrgicos, en alineación con las recomendaciones del PRAC de la EMA y la AEMPS.",
     "motor_analisis": "Claude API"
   },
   {
@@ -202,7 +202,7 @@
     "producto": "FASENRA (Benralizumab)",
     "fecha_publicacion": "2026-01-28",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-04-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:56",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M04-26_Benralizumab.pdf",
     "subtitulo": "Evaluación del Informe Periódico de Seguridad (IPS) de FASENRA (Benralizumab);",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -210,9 +210,9 @@
     "indicador_tiempos": "15 días hábiles para evaluar e informar al DIGEMID, finalizar proceso según tiempos de RD y evaluar efectividad",
     "base_legal": "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C",
     "principio_activo": "Benralizumab",
-    "titular_rs": "No especificado en el texto (TRS de Fasenra)",
+    "titular_rs": "No especificado en el texto (TRS de FASENRA)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID evalúa el Informe Periódico de Seguridad (IPS) de Fasenra (Benralizumab) e identifica que la ficha técnica nacional no incluye las frecuencias de reacciones adversas ni actualizaciones presentes en fichas de FDA y EMA, además de evidenciarse una significativa falta de información sobre desenlaces en embarazos con exposición al medicamento (74.7% de casos acumulados sin datos). Se requiere la actualización de la ficha técnica con clasificación MedDRA y mejora en el registro de datos de seguridad en poblaciones especiales como embarazadas y mujeres en lactancia.",
+    "resumen": "DIGEMID evalúa el Informe Periódico de Seguridad (IPS) de FASENRA (Benralizumab) e identifica que la ficha técnica nacional no especifica frecuencias de reacciones adversas ni recoge actualizaciones de seguridad aprobadas por FDA y EMA, evidenciándose además datos incompletos sobre desenlaces en embarazos expuestos al medicamento. Se requiere estandarización de la tabla de reacciones adversas con clasificación MedDRA y actualización de la información de seguridad en la ficha técnica autorizada en Perú.",
     "motor_analisis": "Claude API"
   },
   {
@@ -220,7 +220,7 @@
     "producto": "KESIMPTA (Ofatumumab)",
     "fecha_publicacion": "2026-01-28",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-03-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:56",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M03-26_Ofatumumab.pdf",
     "subtitulo": "Evaluación del Informe Periódico de Seguridad (IPS) de KESIMPTA (Ofatumumab);",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -230,7 +230,7 @@
     "principio_activo": "Ofatumumab",
     "titular_rs": "No especificado en el texto (titular de registro sanitario de KESIMPTA)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID evalúa el Informe Periódico de Seguridad de KESIMPTA (ofatumumab) correspondiente al periodo noviembre 2023-diciembre 2024, identificando actualizaciones de seguridad aprobadas por la FDA que no están incorporadas en la versión autorizada en Perú, incluyendo nuevas advertencias sobre lesión hepática, reacciones de hipersensibilidad poscomercialización, reducción de inmunoglobulinas y riesgo fetal, así como inconsistencias administrativas en los expedientes presentados que requieren corrección.",
+    "resumen": "DIGEMID emite resolución directoral ordenando la actualización de la Ficha Técnica e Inserto de KESIMPTA (ofatumumab) en Perú para alinearlos con las actualizaciones de seguridad aprobadas por la FDA el 18/08/2025, que incorporan nuevas advertencias sobre lesión hepática, reacciones de hipersensibilidad poscomercialización, reducción de inmunoglobulinas y nuevos requisitos de evaluaciones previas al inicio del tratamiento. Asimismo, se requiere la corrección de inconsistencias en los periodos declarados y en los registros sanitarios consignados en el Informe Periódico de Seguridad presentado.",
     "motor_analisis": "Claude API"
   },
   {
@@ -238,7 +238,7 @@
     "producto": "FLIXMAB (Infliximab)",
     "fecha_publicacion": "2026-01-23",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-02-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:56",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M02-26_infliximab.pdf",
     "subtitulo": "Evaluación del Informe Periódico de Seguridad (IPS) de FLIXMAB (Infliximab);",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -246,9 +246,9 @@
     "indicador_tiempos": "15 días hábiles para evaluar e informar al DIGEMID, finalizar proceso según tiempos de RD y evaluar efectividad",
     "base_legal": "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C",
     "principio_activo": "Infliximab",
-    "titular_rs": "Titular del registro sanitario de FLIXMAB (Biológico Similar) - no especificado nominalmente en el texto",
+    "titular_rs": "Titular del registro sanitario de FLIXMAB (Biológico Similar)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID identificó que la ficha técnica e inserto de FLIXMAB (Infliximab, biológico similar) no incluyen la totalidad de las reacciones adversas descritas en el producto de referencia Remicade (EMA), además de múltiples inconsistencias metodológicas y de datos en el Informe Periódico de Seguridad (IPS) correspondiente al periodo julio 2021 - junio 2025. Se requiere al titular actualizar la documentación de seguridad local y corregir los errores identificados en la estimación de exposición y caracterización de pacientes.",
+    "resumen": "DIGEMID evaluó el Informe Periódico de Seguridad (IPS) del periodo 2021-2025 de FLIXMAB (Infliximab, biológico similar) e identificó que la Ficha Técnica e inserto locales no incluyen todas las reacciones adversas descritas en el producto de referencia Remicade (EMA), además de múltiples inconsistencias metodológicas en la estimación de pacientes expuestos, caracterización de poblaciones especiales y codificación MedDRA. Se requiere al titular actualizar la documentación de seguridad y corregir los errores reportados.",
     "motor_analisis": "Claude API"
   },
   {
@@ -256,7 +256,7 @@
     "producto": "ENSPRYNG (Satralizumab)",
     "fecha_publicacion": "2026-01-23",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2026/modificaciones-n-01-2026/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:56",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2026/M01-26_Satralizumab.pdf",
     "subtitulo": "Evaluación del Informe Periódico de Seguridad (IPS) de ENSPRYNG (Satralizumab);;",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -264,9 +264,9 @@
     "indicador_tiempos": "15 días hábiles para evaluar e informar al DIGEMID, finalizar proceso según tiempos de RD y evaluar efectividad",
     "base_legal": "Art. 6,13,36,37,151  D.S. 016-2011-SA / ICH E2C",
     "principio_activo": "Satralizumab",
-    "titular_rs": "No especificado en el texto",
+    "titular_rs": "No especificado en el texto (titular del registro sanitario de ENSPRYNG)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID identificó una discrepancia entre la Ficha Técnica local vigente de ENSPRYNG (Satralizumab) y la CDS Versión 5.0, que incorpora actualizaciones de seguridad ya reflejadas en la Ficha Técnica de la FDA desde septiembre del 2022. Se requiere actualizar la Ficha Técnica peruana para incluir nuevas contraindicaciones, advertencias y precauciones relacionadas con hepatitis B, tuberculosis, infecciones e hipersensibilidad, así como la actualización del perfil de reacciones adversas.",
+    "resumen": "DIGEMID identificó una discrepancia entre la Ficha Técnica local vigente de ENSPRYNG (Satralizumab) y la CDS Versión 5.0, así como la ficha técnica aprobada por la FDA, que incorpora nuevas contraindicaciones, advertencias de seguridad ampliadas y actualización de reacciones adversas. Se requiere la actualización de la Ficha Técnica peruana para armonizarla con los estándares internacionales de seguridad vigentes.",
     "motor_analisis": "Claude API"
   },
   {
@@ -274,7 +274,7 @@
     "producto": "Finasterida y Dutasterida",
     "fecha_publicacion": "2025-12-03",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2025/modificaciones-n-17-2025/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:56",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2025/M17-25_Finasterida-Dutasterida.pdf",
     "subtitulo": "Evaluación del Informe Periódico de seguridad para los productos farmacéuticos con el IFA Finasterida y Dutasterida",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -284,7 +284,7 @@
     "principio_activo": "Finasterida y Dutasterida",
     "titular_rs": "Todos los titulares de registros sanitarios vigentes que contengan Finasterida y/o Dutasterida",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID dispone la actualización de la ficha técnica e inserto de todos los medicamentos que contienen Finasterida y Dutasterida para incorporar nuevas advertencias sobre el riesgo de ideación suicida y cambios en el estado de ánimo, confirmado por el PRAC de la EMA con 313 casos reportados para Finasterida y 13 para Dutasterida. La medida aplica por precaución también a Dutasterida debido a su mecanismo de acción similar como inhibidor de la 5-alfa-reductasa.",
+    "resumen": "DIGEMID ordena actualizar la información de seguridad de productos que contienen Finasterida (1 mg y 5 mg) y Dutasterida, incorporando en ficha técnica y prospecto advertencias sobre el riesgo de ideación suicida y cambios en el estado de ánimo, confirmado por el PRAC de la EMA especialmente para finasterida oral. Para dutasterida, aunque no se estableció causalidad directa, se incluyen advertencias preventivas por su mecanismo de acción similar como inhibidor de la 5-alfa-reductasa.",
     "motor_analisis": "Claude API"
   },
   {
@@ -292,7 +292,7 @@
     "producto": "Fimasartan",
     "fecha_publicacion": "2025-12-03",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2025/modificaciones-n-16-2025/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:56",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2025/M16-25_Fimasartan.pdf",
     "subtitulo": "Evaluación del Informe Periódico de Seguridad de Fimasartan",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -302,7 +302,7 @@
     "principio_activo": "Fimasartan",
     "titular_rs": "SUN PHARMACEUTICAL INDUSTRIES S.A.C.",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID dispone la actualización de la información de seguridad de los productos farmacéuticos que contienen Fimasartan (monofármaco y asociaciones, vía oral), incorporando el angioedema intestinal como señal de seguridad identificada por el PRAC de la EMA y la AEMPS. La medida aplica a cuatro registros sanitarios vigentes bajo titularidad de SUN PHARMACEUTICAL INDUSTRIES S.A.C. (ARAKOR, ARAKOR, DIARAKOR y un cuarto producto), con plazo de 60 días hábiles para efectuar las modificaciones en ficha técnica e inserto.",
+    "resumen": "DIGEMID dispone la actualización obligatoria de la ficha técnica e inserto de todos los productos farmacéuticos vigentes que contienen Fimasartan (monofármaco y combinaciones), para incorporar advertencias y reacciones adversas relacionadas con el riesgo de angioedema intestinal, identificado como señal de seguridad por el PRAC de la EMA y la AEMPS. La medida aplica a cuatro registros sanitarios titularidad de SUN PHARMACEUTICAL INDUSTRIES S.A.C.",
     "motor_analisis": "Claude API"
   },
   {
@@ -310,7 +310,7 @@
     "producto": "Metformina y los Inhibidores de SGLT-2",
     "fecha_publicacion": "2025-12-03",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2025/modificaciones-n-15-2025/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:56",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2025/M15-25_Metformina.pdf",
     "subtitulo": "Evaluación del Informe Periódico de Seguridad de Metformina y los Inhibidores de SGLT-2;",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -320,7 +320,7 @@
     "principio_activo": "Metformina e Inhibidores SGLT-2 (canagliflozina, dapagliflozina, empagliflozina)",
     "titular_rs": "Titulares de registros sanitarios de productos farmacéuticos que contienen Metformina y/o Inhibidores SGLT-2",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID dispone la actualización de la información de seguridad de productos farmacéuticos que contienen Metformina y/o Inhibidores SGLT-2, incorporando en fichas técnicas e insertos nuevas advertencias sobre el riesgo de agravamiento del síndrome de encefalopatía mitocondrial con acidosis láctica y episodios similares a ictus (MELAS) y diabetes de herencia materna y sordera (MIDD) en pacientes con enfermedades mitocondriales, además de actualizar información sobre cetoacidosis diabética, hematocrito elevado e infecciones genitales. Esta medida afecta a 295 productos con registro sanitario vigente que contienen metformina y 78 que contienen inhibidores SGLT-2, en concordancia con las recomendaciones del PRAC, CMDh y la EMA.",
+    "resumen": "DIGEMID dispone la actualización de la información de seguridad de fichas técnicas e insertos de productos farmacéuticos que contienen Metformina y/o Inhibidores SGLT-2, incorporando nuevos riesgos identificados por el PRAC/EMA, incluyendo agravamiento del síndrome MELAS y MIDD en pacientes con enfermedades mitocondriales tratados con Metformina, y cetoacidosis diabética, hematocrito elevado e infecciones genitales asociados a Inhibidores SGLT-2.",
     "motor_analisis": "Claude API"
   },
   {
@@ -328,7 +328,7 @@
     "producto": "Asfotasa alfa",
     "fecha_publicacion": "2025-11-25",
     "url": "https://www.digemid.minsa.gob.pe/webDigemid/alertas-modificaciones/2025/modificaciones-n-14-2025/",
-    "fecha_captura": "2026-09-28 11:06:15",
+    "fecha_captura": "2026-09-28 15:00:56",
     "pdf_url": "https://www.digemid.minsa.gob.pe/Archivos/Modificaciones/2025/M14-25_Asfotasa.pdf",
     "subtitulo": "Evaluación del Informe Periódico de Seguridad de Asfotasa alfa;",
     "tipo_modificacion": "ACTUALIZACION SEGURIDAD",
@@ -338,7 +338,7 @@
     "principio_activo": "Asfotasa alfa",
     "titular_rs": "No especificado en el texto (producto comercializado como STRENSIQ)",
     "accion_requerida": "Evaluar impacto y comunicar posición a DIGEMID en 15 días hábiles - Gestión de Riesgos",
-    "resumen": "DIGEMID, tras evaluar el Informe Periódico de Seguridad (IPS) de STRENSIQ (asfotasa alfa), identificó diferencias entre la ficha técnica nacional y la autorizada por la EMA, incluyendo actualizaciones en contraindicaciones, advertencias de seguridad (hipersensibilidad grave/anafilaxia, craneosinostosis, PTH, trazabilidad) y corrección en la clasificación de frecuencia de reacciones adversas (Hipocalcemia y Nefrolitiasis). Se requiere actualizar la ficha técnica nacional y el prospecto para reflejar la información de seguridad vigente conforme a los estándares de la EMA.",
+    "resumen": "DIGEMID, tras la evaluación del Informe Periódico de Seguridad (IPS) de STRENSIQ (asfotasa alfa), identifica diferencias entre la ficha técnica nacional y la autorizada por la EMA, incluyendo la ausencia de contraindicación por hipersensibilidad grave, advertencias incompletas sobre anafilaxia y craneosinostosis, y una clasificación incorrecta de frecuencia de las reacciones adversas Hipocalcemia y Nefrolitiasis. Se requiere actualizar la ficha técnica nacional, el prospecto y el rotulado para reflejar la información de seguridad vigente aprobada por la EMA.",
     "motor_analisis": "Claude API"
   }
 ]
