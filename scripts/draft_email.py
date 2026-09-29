@@ -17,7 +17,9 @@ from email import encoders
 
 # ✅ Se leen desde variables de entorno definidas en el YML
 EMAIL_FROM = os.environ.get('EMAIL_FROM', 'conkosafe.ai@gmail.com')
-EMAIL_TO   = os.environ['EMAIL_TO']   # lista completa separada por comas
+EMAIL_TO   = os.environ.get('EMAIL_TO', '')   # secret EMAIL_TO: lista separada por comas
+if not EMAIL_TO.strip():
+    raise SystemExit("EMAIL_TO vacio: falta el secret EMAIL_TO en Settings -> Secrets and variables -> Actions")
 
 # Mismas credenciales que usabas para SMTP — un app password de Gmail sirve
 # tanto para SMTP como para IMAP (solo hay que tener IMAP habilitado en la
@@ -169,7 +171,18 @@ ruta_excel = sorted(archivos)[-1]
 # SMTP (no hay envelope), los destinatarios reales van en un header Bcc
 # real — Gmail lo respeta y los oculta entre sí al momento en que TÚ le
 # des "Enviar" manualmente sobre este borrador.
-destinatarios = [e.strip() for e in EMAIL_TO.split(',') if e.strip()]
+# Se quita TODO espacio interno: una lista partida en varias lineas (YAML las
+# une con un espacio) dejaba direcciones como "angelica.aguero@ conkomerco.com".
+_EMAIL_OK = re.compile(r'^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$')
+_candidatos = [re.sub(r'\s+', '', e) for e in EMAIL_TO.split(',') if e.strip()]
+destinatarios = [e for e in _candidatos if _EMAIL_OK.match(e)]
+_invalidos = len(_candidatos) - len(destinatarios)
+if _invalidos:
+    # No se imprimen las direcciones: el log de Actions es publico.
+    print(f"::warning::{_invalidos} direccion(es) invalida(s) en EMAIL_TO; se omiten del borrador")
+if not destinatarios:
+    raise SystemExit("EMAIL_TO no contiene ninguna direccion valida")
+print(f"Destinatarios validos: {len(destinatarios)}")
 
 msg = MIMEMultipart('mixed')
 msg['Subject']    = asunto

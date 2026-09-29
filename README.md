@@ -1,28 +1,28 @@
 # Monitor DIGEMID — Modificatorias al Registro Sanitario
 
-Ejecuta el scraper de **Actualizaciones de Seguridad DIGEMID** tres veces por semana
-(Lun / Mié / Vie a las 8:00 AM hora Lima), extrae las **10 modificatorias más recientes**
-de tipo `ACTUALIZACION SEGURIDAD` y envía un correo HTML con el Excel adjunto.
+Ejecuta el scraper de **Actualizaciones de Seguridad DIGEMID** una vez por semana
+(**lunes a las 8:00 AM hora Lima**), filtra las modificatorias de seguridad, las
+sube a Supabase y deja en Gmail un **borrador** de correo HTML con el Excel de las
+10 más recientes adjunto (no se envía solo: hay que abrirlo y pulsar "Enviar").
 
 ## Flujo
 
 ```
-Lun/Mié/Vie — 8:00 AM Lima
+Lunes — 8:00 AM Lima
         |
         v
-[1] Scraping DIGEMID (2 páginas ~20 posts)
+[1] Scraping DIGEMID (2 páginas ~20 posts) + análisis de PDF (Claude o heurístico)
         |
         v
-[Filtro] ACTUALIZACION SEGURIDAD → top 10
+[Filtro] Tipos de seguridad → todas a JSON/MD/Supabase, top 10 al Excel
         |
         v
-[2] Generar Excel  →  modificatorias_digemid_YYYYMMDD_HHMM.xlsx
+[2] Excel raw_data/ + JSON data/ + resumen summaries/ (commit al repo)
         |
         v
-[3] Correo HTML con Excel adjunto
-    De:   conkosafe.ai@gmail.com
-    Para: july.maita / finanzas / alex.rodriguez
-          angelica.aguero / giancarlos.chafloque
+[3] Borrador en Gmail (IMAP) con el Excel adjunto
+    De:  conkosafe.ai@gmail.com
+    Bcc: lista del secret EMAIL_TO
         |
         v
 [4] Si falla → correo de error automático
@@ -39,8 +39,11 @@ modificatorias_digemid/
  scripts/
    scraper.py                       ← scraper + exportador Excel
    run_scraper.py                   ← orquestador GitHub Actions
-   send_email.py                    ← correo HTML con adjunto
+   exportadores.py                  ← JSON (data/) y resumen MD (summaries/)
+   supabase_sync.py                 ← upsert a la tabla modificatorias_digemid
+   draft_email.py                   ← borrador HTML en Gmail con el Excel adjunto
    notify_failure.py                ← alerta de fallo
+ raw_data/  data/  summaries/       ← histórico generado por el workflow
  README.md
 ```
 
@@ -53,17 +56,21 @@ modificatorias_digemid/
 | `SMTP_HOST` | Servidor SMTP — ej: `smtp.gmail.com` |
 | `SMTP_PORT` | Puerto SMTP — ej: `587` |
 | `SMTP_USER` | Cuenta que envía (`conkosafe.ai@gmail.com`) |
-| `SMTP_PASS` | App Password de Gmail (16 caracteres) |
+| `SMTP_PASS` | App Password de Gmail (16 caracteres; sirve también para IMAP) |
+| `EMAIL_TO` | Destinatarios del borrador, separados por comas **en una sola línea**. Es secret porque incluye correos de clientes y el repo es público |
 | `ANTHROPIC_API_KEY` | (Recomendado) Activa análisis semántico con Claude |
+| `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` | Sincronización con la tabla `modificatorias_digemid` |
+
+Para cambiar destinatarios: **Settings → Secrets and variables → Actions → `EMAIL_TO` → Update**.
+El script descarta y avisa (sin mostrarlas en el log) las direcciones con formato inválido.
 
 ## Valores fijos (no necesitan secret)
 
 | Parámetro | Valor |
 |-----------|-------|
 | Remitente | `conkosafe.ai@gmail.com` |
-| Destinatarios | `july.maita`, `finanzas`, `alex.rodriguez`, `angelica.aguero`, `giancarlos.chafloque` @conkomerco.com |
-| Frecuencia | Lun/Mié/Vie a las 8:00 AM hora Lima |
-| Filtro | Solo `ACTUALIZACION SEGURIDAD` — top 10 más recientes |
+| Frecuencia | Lunes a las 8:00 AM hora Lima (`cron: 0 13 * * 1`) |
+| Filtro | Tipos de seguridad (`TIPOS_SEGURIDAD` en `scraper.py`) — top 10 más recientes en el Excel |
 
 ## Excel generado
 
@@ -112,13 +119,15 @@ El Excel contiene **2 hojas**:
 
 Parámetros opcionales:
 - `max_paginas`: `2` (default) — páginas del listado DIGEMID (~10 posts/página)
-- `dry_run`: `true` — solo scrapea, no envía correo
+- `max_filas`: `10` (default) — filas del Excel adjunto
+- `dry_run`: `true` — solo scrapea, no crea el borrador
 
 ## Troubleshooting
 
 | Error | Solución |
 |-------|----------|
 | 403 en scraping | Normal; el script reintenta con backoff automático |
-| `SMTPAuthenticationError` | Regenerar App Password en Google (Seguridad → Contraseñas de apps) |
+| `SMTPAuthenticationError` / fallo de login IMAP | Regenerar App Password en Google (Seguridad → Contraseñas de apps) y verificar IMAP habilitado |
+| `EMAIL_TO vacio` | Falta el secret `EMAIL_TO` |
 | PDF escaneado | El PDF es imagen; análisis por título (heurístico) |
 | Workflow no corre a las 8 AM | GitHub Actions puede tener delay de hasta 15 min |
