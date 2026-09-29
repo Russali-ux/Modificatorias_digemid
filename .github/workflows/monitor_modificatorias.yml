@@ -29,15 +29,9 @@ env:
   TZ: "America/Lima"
   CLAUDE_MODEL: "claude-sonnet-4-6"    # cambiar a claude-sonnet-5 si se migra
   EMAIL_FROM: "conkosafe.ai@gmail.com"
-  # Lista de distribucion movida a un secret: contiene correos de clientes y
-  # el repositorio es publico.
-  EMAIL_TO: "finanzas@conkomerco.com,conkosafe.ai@gmail.com,july.maita@conkomerco.com,alex.rodriguez@conkomerco.com,angelica.aguero@
-conkomerco.com,aron.cortez@conkomerco.com,giancarlos.chafloque@conkomerco.com,vigilanciasanitaria@soltonpharma.com,farmacovigilancia
-@corval.com.pe,direccion.tecnica@corval.com.pe,azegarra@soltonpharma.com,fv@corporacioncobefar.com.pe,farmacovigilancia@greyinversio
-nes.com,regulatorios@greyinversiones.com,fv.peru@sevenpharma.net,fv1.peru@sevenpharma.net,Regulatory.Peru@sevenpharma.net,farmacovig
-ilancia@qmpharma.com,farmacovigilancia@perulab.com.pe,ricardo.barrantes@perulab.com.pe,patricia.medina@perulab.com.pe,farmacovigilan
-cia@bago.com.pe,srosas@ferrer.com,pefarmacovigilancia@ferrer.com,dtecnica@corporacioncobefar.com.pe,jugas@munizlaw.com,nperez@munizl
-aw.com,mespinozaf@munizlaw.com,bmerchor@munizlaw.com"
+  # La lista de destinatarios (EMAIL_TO) vive en el secret del mismo nombre:
+  # contiene correos de clientes y el repositorio es publico. Se inyecta solo
+  # en el paso que arma el borrador (job draft_email).
 
 jobs:
 
@@ -167,6 +161,7 @@ jobs:
           # habilitado: Gmail -> Configuracion -> Reenvio y correo POP/IMAP.
           SMTP_USER:         ${{ secrets.SMTP_USER }}
           SMTP_PASS:         ${{ secrets.SMTP_PASS }}
+          EMAIL_TO:          ${{ secrets.EMAIL_TO }}
           TOTAL:             ${{ needs.scrape.outputs.total_modif }}
           PREVENTIVAS:       ${{ needs.scrape.outputs.modif_preventivas }}
           INMEDIATAS:        ${{ needs.scrape.outputs.modif_inmediatas }}
