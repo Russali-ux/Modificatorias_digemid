@@ -423,7 +423,16 @@ def _total_paginas(soup: BeautifulSoup) -> int:
 def scrapear_modificaciones(max_paginas: int = 2,
                              analizar_pdfs: bool = True,
                              solo_hoy: bool = False,
-                             delay_paginas: float = 1.5) -> pd.DataFrame:
+                             delay_paginas: float = 1.5,
+                             fecha_desde=None) -> pd.DataFrame:
+    """fecha_desde (date | 'YYYY-MM-DD' | None): modo histórico. Recorre el
+    listado página a página (más reciente → más antigua) y se detiene en cuanto
+    una página completa es anterior a esa fecha; luego descarta lo anterior.
+    En este modo max_paginas actúa solo como tope de seguridad (None = sin tope)."""
+    if isinstance(fecha_desde, str) and fecha_desde.strip():
+        fecha_desde = datetime.strptime(fecha_desde.strip()[:10], "%Y-%m-%d").date()
+    elif not fecha_desde:
+        fecha_desde = None
     resp = _get_con_reintentos(LIST_URL, timeout=30)
     if not resp:
         raise RuntimeError(f"No se pudo obtener el listado de modificatorias tras varios intentos: {LIST_URL}")
@@ -434,11 +443,18 @@ def scrapear_modificaciones(max_paginas: int = 2,
     if max_paginas is not None:
         total = min(total, max_paginas)
 
-    print(f"📋 Páginas a procesar: {total}")
+    print(f"📋 Páginas a procesar: {total}" + (f" (histórico desde {fecha_desde}, corta antes si llega a esa fecha)" if fecha_desde else ""))
     items = _parsear_posts(soup)
     print(f"  Página 1: {len(items)} modificatorias")
 
+    def _pagina_antigua(lote):
+        fechas = [i["fecha_publicacion"] for i in lote if i.get("fecha_publicacion")]
+        return bool(fecha_desde and fechas and max(fechas) < fecha_desde)
+
     for pag in range(2, total + 1):
+        if _pagina_antigua(items[-12:]):
+            print(f"  Corte histórico: la página {pag-1} ya es anterior a {fecha_desde}")
+            break
         r = _get_con_reintentos(PAGE_URL.format(page=pag), timeout=30)
         if not r:
             print(f"  ERROR página {pag}: sin respuesta tras varios reintentos")
@@ -452,6 +468,11 @@ def scrapear_modificaciones(max_paginas: int = 2,
         except Exception as e:
             print(f"  ERROR página {pag}: {e}")
         time.sleep(delay_paginas)
+
+    if fecha_desde:
+        antes = len(items)
+        items = [i for i in items if i.get("fecha_publicacion") and i["fecha_publicacion"] >= fecha_desde]
+        print(f"  Filtro histórico >= {fecha_desde}: {len(items)} de {antes} publicaciones")
 
     if solo_hoy:
         hoy = datetime.now().date()

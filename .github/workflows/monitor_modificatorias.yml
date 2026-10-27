@@ -5,8 +5,12 @@ on:
     - cron: "0 13 * * 1"       # Lunes a las 08:00 AM hora Lima (UTC-5)
   workflow_dispatch:
     inputs:
+      fecha_desde:
+        description: "Historico: scrapear desde esta fecha (YYYY-MM-DD, ej. 2023-01-01). Vacio = solo lo reciente"
+        required: false
+        default: ""
       max_paginas:
-        description: "Paginas a scrapear (2 = ~20 modificatorias, filtra 10 de seguridad)"
+        description: "Paginas a scrapear (2 = ~20 modificatorias; 0 = sin tope, usado con fecha_desde)"
         required: false
         default: "2"
       max_filas:
@@ -38,7 +42,9 @@ jobs:
   scrape:
     name: "1 Scraping Modificatorias DIGEMID"
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 20 min alcanza para el lunes; el historico desde 2023 (~cientos de PDFs a
+    # 12 s c/u) necesita mas margen.
+    timeout-minutes: ${{ github.event.inputs.fecha_desde && 180 || 20 }}
     permissions:
       contents: write   # necesario para commitear raw_data/, data/ y summaries/
     outputs:
@@ -107,6 +113,7 @@ jobs:
         id: run
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FECHA_DESDE: ${{ github.event.inputs.fecha_desde || '' }}
           MAX_PAGINAS: ${{ github.event.inputs.max_paginas || '2' }}
           MAX_FILAS:   ${{ github.event.inputs.max_filas   || '10' }}
           SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}

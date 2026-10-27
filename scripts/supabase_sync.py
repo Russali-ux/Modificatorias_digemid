@@ -121,6 +121,26 @@ def _upsert(supabase: Client, registros: list) -> int:
         print("⚠️  No hay registros válidos para subir a Supabase.")
         return 0
 
+    # No sobrescribir filas que un admin corrigió a mano en el monitor
+    # (editado_manualmente=true): el re-scrapeo histórico las pisaría con lo
+    # que vuelva a extraer el motor heurístico/Claude.
+    try:
+        editadas = (supabase.table("modificatorias_digemid")
+                    .select("n_modificacion,fecha_publicacion")
+                    .eq("editado_manualmente", True).execute().data or [])
+        protegidas = {(e["n_modificacion"], str(e["fecha_publicacion"])[:10]) for e in editadas}
+        if protegidas:
+            antes = len(registros_validos)
+            registros_validos = [r for r in registros_validos
+                                 if (r["n_modificacion"], r["fecha_publicacion"]) not in protegidas]
+            if antes != len(registros_validos):
+                print(f"ℹ️  {antes - len(registros_validos)} fila(s) editadas manualmente se conservan sin cambios.")
+    except Exception as e:
+        print(f"⚠️  No se pudo leer filas editadas manualmente ({e}); se sube todo.")
+    if not registros_validos:
+        print("ℹ️  Nada nuevo que subir a Supabase.")
+        return 0
+
     resultado = (
         supabase.table("modificatorias_digemid")
         .upsert(registros_validos, on_conflict="n_modificacion,fecha_publicacion")

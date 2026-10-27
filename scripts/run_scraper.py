@@ -11,7 +11,13 @@ from datetime import datetime
 
 exec(open('scripts/scraper.py').read())
 
-max_pag   = int(os.environ.get('MAX_PAGINAS', '2'))
+# FECHA_DESDE (YYYY-MM-DD) activa el modo histórico (ej. 2023-01-01): recorre
+# todas las páginas hasta esa fecha. MAX_PAGINAS=0 significa "sin tope".
+FECHA_DESDE = os.environ.get('FECHA_DESDE', '').strip() or None
+_mp = os.environ.get('MAX_PAGINAS', '').strip() or '2'
+if FECHA_DESDE and _mp == '2':   # el default "2" del formulario no aplica al historico
+    _mp = '0'
+max_pag   = int(_mp) or None
 MAX_FILAS = int(os.environ.get('MAX_FILAS', '10'))   # antes .head(10) fijo
 fecha     = datetime.now().strftime('%Y%m%d_%H%M')
 nombre    = f"modificatorias_digemid_{fecha}.xlsx"
@@ -49,7 +55,8 @@ print(f"Motor de analisis esperado: {motor_esperado} "
       f"(modelo: {os.environ.get('CLAUDE_MODEL', 'claude-sonnet-4-6')})")
 
 # ── Scrapear ───────────────────────────────────────────────────────────────
-df_completo = scrapear_modificaciones(max_paginas=max_pag, analizar_pdfs=True, solo_hoy=False)
+df_completo = scrapear_modificaciones(max_paginas=max_pag, analizar_pdfs=True, solo_hoy=False,
+                                     fecha_desde=FECHA_DESDE)
 
 FALLOS_PDF = {"Sin PDF", "Error descarga PDF", "Error PDF", "PDF escaneado"}
 total_scrapeadas = len(df_completo)
